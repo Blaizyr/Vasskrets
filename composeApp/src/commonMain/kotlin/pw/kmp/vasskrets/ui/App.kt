@@ -1,9 +1,10 @@
-package pw.kmp.vasskrets
+package pw.kmp.vasskrets.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -66,9 +67,13 @@ internal fun App() = AppTheme {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf(NoteRepository.loadAll()) }
+    var activePath by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp).fillMaxSize()) {
-        Text("Vasskrets: Lyden av JSON-regndråper ")
+        Text(
+            modifier = Modifier.padding(top = 32.dp),
+            text = "Vasskrets: Lyden av JSON-regndråper "
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -90,26 +95,31 @@ internal fun App() = AppTheme {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = {
-            if (title.isNotBlank() && content.isNotBlank()) {
-                val note = Note(title = title, content = content)
-                NoteRepository.save(note)
-                notes = NoteRepository.loadAll()
-                title = ""
-                content = ""
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+            Button(onClick = {
+                if (title.isNotBlank() && content.isNotBlank()) {
+                    val note = Note(title = title, content = content)
+                    activePath = NoteRepository.saveAndPoint(note).name
+                    notes = NoteRepository.loadAll()
+                    title = ""
+                    content = ""
+                }
+            }) {
+                Text("Zapisz notatkę")
             }
-        }) {
-            Text("Zapisz notatkę")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        FilePathDisplay(filePath = activePath) { /*TODO("copy to clipboard") #2*/ }
 
         HorizontalDivider()
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(notes) { note ->
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text(note.title, /*style = MaterialTheme.typography.subtitle1*/)
+                    Text(note.id)
+                    Text(note.title /*style = MaterialTheme.typography.subtitle1*/)
                     Text(note.content/*, style = MaterialTheme.typography.body2*/)
                     Text("Utworzono: ${note.meta.created}"/*, style = MaterialTheme.typography.caption*/)
                 }

@@ -21,6 +21,15 @@ object NoteRepository {
             serializer = Note.serializer()
         )
 
+    fun saveAndPoint(note: Note): Path {
+        storage.save(
+            path = notesDir / "${note.id}.json",
+            content = note,
+            serializer = Note.serializer()
+        )
+        return notesDir / "${note.id}.json"
+    }
+
     fun get(noteId: String): Note? =
         storage.load(
             path = notesDir / "$noteId.json",

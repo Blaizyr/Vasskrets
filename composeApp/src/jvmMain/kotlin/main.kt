@@ -3,7 +3,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import java.awt.Dimension
-import pw.kmp.vasskrets.App
+import pw.kmp.vasskrets.ui.App
 
 fun main() = application {
     Window(

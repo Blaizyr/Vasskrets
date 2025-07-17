@@ -9,7 +9,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class Note(
-    val id: String = Uuid.random().toString(),
+    val id: String = Uuid.random().toString(), //TODO("Figure out naming convention with uniqueness") #3
     val title: String,
     val content: String,
     val tags: List<String> = emptyList(),

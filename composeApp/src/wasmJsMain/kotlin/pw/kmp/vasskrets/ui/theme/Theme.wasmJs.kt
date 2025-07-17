@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.theme
+package pw.kmp.vasskrets.ui.theme
 
 import androidx.compose.runtime.Composable
 

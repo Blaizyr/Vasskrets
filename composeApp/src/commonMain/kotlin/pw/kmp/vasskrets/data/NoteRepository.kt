@@ -8,9 +8,8 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import pw.kmp.vasskrets.model.Note
-import kotlin.time.ExperimentalTime
+import pw.kmp.vasskrets.platform.getPlatformFileSystem
 
-@ExperimentalTime
 object NoteRepository {
     private val storage: NoteStorage = NoteStorage()
     private val notesDir: Path = "notes".toPath()
@@ -39,7 +38,7 @@ object NoteRepository {
 
 class NoteStorage(
     private val json: Json = Json { prettyPrint = true },
-    private val fs: FileSystem = FileSystemDefault,
+    private val fs: FileSystem = getPlatformFileSystem(),
 ) {
 
     fun <T> save(path: Path, content: T, serializer: KSerializer<T>): Boolean {
@@ -88,5 +87,3 @@ class NoteStorage(
         }
     }
 }
-
-private val FileSystemDefault: FileSystem = FileSystem as FileSystem

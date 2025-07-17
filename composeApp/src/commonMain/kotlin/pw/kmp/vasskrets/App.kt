@@ -46,8 +46,8 @@ import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pw.kmp.vasskrets.data.NoteRepository
 import pw.kmp.vasskrets.model.Note
-import pw.kmp.vasskrets.theme.AppTheme
-import pw.kmp.vasskrets.theme.LocalThemeIsDark
+import pw.kmp.vasskrets.ui.theme.AppTheme
+import pw.kmp.vasskrets.ui.theme.LocalThemeIsDark
 import vasskrets.composeapp.generated.resources.IndieFlower_Regular
 import vasskrets.composeapp.generated.resources.Res
 import vasskrets.composeapp.generated.resources.ic_cyclone
@@ -59,9 +59,7 @@ import vasskrets.composeapp.generated.resources.run
 import vasskrets.composeapp.generated.resources.stop
 import vasskrets.composeapp.generated.resources.theme
 import vasskrets.composeapp.generated.resources.vasskrets
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 @Preview
 @Composable
 internal fun App() = AppTheme {

@@ -7,7 +7,6 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-@ExperimentalTime
 @Serializable
 data class Note(
     val id: String = Uuid.random().toString(),
@@ -21,7 +20,7 @@ data class Note(
 @Serializable
 data class Relation(val type: String, val targetId: String)
 
-@ExperimentalTime
+@OptIn(ExperimentalTime::class)
 @Serializable
 data class NoteMeta(
     val created: String = Clock.System.now().toString(),

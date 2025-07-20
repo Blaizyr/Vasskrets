@@ -99,7 +99,7 @@ internal fun App() = AppTheme {
             Button(onClick = {
                 if (title.isNotBlank() && content.isNotBlank()) {
                     val note = Note(title = title, content = content)
-                    activePath = NoteRepository.saveAndPoint(note).name
+                    activePath = NoteRepository.saveAndPoint(note)?.name ?: ""
                     notes = NoteRepository.loadAll()
                     title = ""
                     content = ""

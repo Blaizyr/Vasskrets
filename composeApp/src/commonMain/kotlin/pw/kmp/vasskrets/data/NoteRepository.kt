@@ -14,31 +14,20 @@ import pw.kmp.vasskrets.platform.provideBaseDir
 object NoteRepository {
     private val storage: NoteStorage = NoteStorage()
 
-    fun save(note: Note): Boolean =
-        storage.save(
-            filename = "notes/${note.id}.json",
-            content = note,
-            serializer = Note.serializer()
-        )
+    private fun noteFilePath(noteId: String): Path =
+        provideBaseDir().toPath() / "notes" / "$noteId.json"
 
-    fun saveAndPoint(note: Note): Path {
-        val fileName = "notes/${note.id}.json"
-        storage.save(
-            filename = fileName,
-            content = note,
-            serializer = Note.serializer()
-        )
-        return provideBaseDir().toPath() / fileName
+    fun save(note: Note): Boolean =
+        storage.save(noteFilePath(note.id).name, note, Note.serializer())
+
+    fun saveAndPoint(note: Note): Path? {
+        val saveSucceeded = save(note)
+        return if (saveSucceeded) noteFilePath(note.id) else null
     }
 
-    fun get(noteId: String): Note? =
-        storage.load(
-            path = (provideBaseDir().toPath() / "notes/$noteId.json"),
-            deserializer = Note.serializer()
-        )
+    fun get(noteId: String): Note? = storage.load(noteFilePath(noteId), Note.serializer())
 
-    fun delete(noteId: String): Boolean =
-        storage.delete(provideBaseDir().toPath() / "notes/$noteId.json")
+    fun delete(noteId: String): Boolean = storage.delete(noteFilePath(noteId))
 
     fun loadAll(): List<Note> =
         storage
@@ -51,16 +40,17 @@ class NoteStorage(
     private val json: Json = Json { prettyPrint = true },
     private val fs: FileSystem = getPlatformFileSystem(),
 ) {
+    private fun ensureDirExists(path: Path) {
+        val parent = path.parent ?: return
+        if (!fs.exists(parent)) fs.createDirectories(parent)
+    }
 
     fun <T> save(filename: String, content: T, serializer: KSerializer<T>): Boolean {
         return try {
             val path = baseDir / filename
-            val dir = path.parent
-            if (dir != null && !fs.exists(dir)) {
-                fs.createDirectories(dir)
-            }
+            ensureDirExists(path)
             val text = json.encodeToString(serializer, content)
-            fs.write(path, mustCreate = false) { buffer().writeUtf8(text)/*.flush()*/ }
+            fs.write(path, mustCreate = false) { buffer().writeUtf8(text) }
             true
         } catch (e: Exception) {
             Logger.w(e) { "Save failed: $filename" }

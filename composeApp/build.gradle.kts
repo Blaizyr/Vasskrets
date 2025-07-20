@@ -136,3 +136,19 @@ apollo {
         packageName.set("pw.kmp.vasskrets.graphql")
     }
 }
+
+tasks.register("printSourceSets") {
+    doLast {
+        val sourceSets = project.extensions
+            .findByName("kotlin")
+            ?.let { it as org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension }
+            ?.sourceSets
+
+        sourceSets?.forEach {
+            println("Source set: ${it.name}")
+        }
+    }
+}
+tasks.named("printSourceSets") {
+    notCompatibleWithConfigurationCache("Helper task – accesses project model directly.")
+}

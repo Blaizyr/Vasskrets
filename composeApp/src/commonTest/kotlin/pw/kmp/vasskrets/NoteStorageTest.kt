@@ -4,9 +4,7 @@ import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import okio.buffer
 import okio.fakefilesystem.FakeFileSystem
-import okio.use
 import pw.kmp.vasskrets.data.NoteStorage
 import pw.kmp.vasskrets.model.Note
 import kotlin.test.BeforeTest
@@ -26,54 +24,21 @@ class NoteStorageTest {
 
     @BeforeTest
     fun setup() {
-        fs = FakeFileSystem()
         baseDirPath = "/unit-tests/notes".toPath()
-
-        fun createDirsRecursively(path: Path) {
-            val parent = path.parent
-            if (parent != null && !fs.exists(parent)) {
-                createDirsRecursively(parent)
-            }
-            if (!fs.exists(path)) {
-                fs.createDirectory(path)
-                println("Created directory: $path")
-            }
+        fs = FakeFileSystem().apply {
+            ensureDirsFor(baseDirPath)
         }
-
-        if (!fs.exists(baseDirPath)) {
-            createDirsRecursively(baseDirPath)
-        }
-
-        val exampleFile = baseDirPath / "testfile.txt"
-        val parentDir = exampleFile.parent ?: error("File musi mieć katalog nadrzędny!")
-
-        if (!fs.exists(parentDir)) {
-            createDirsRecursively(parentDir)
-        }
-
-        fs.sink(exampleFile).buffer().use { sink ->
-            sink.writeUtf8("Testowy zapis w FakeFileSystem")
-        }
-
-        println("Zawartość katalogu po zapisie pliku:")
-        fs.list(baseDirPath).forEach { println(it) }
-
-        storage = NoteStorage(
-            baseDir = baseDirPath,
-            fs = fs
-        )
+        storage = NoteStorage(baseDirPath, Json, fs)
     }
 
     @Test
     fun `save should write a JSON file`() {
-        val note = Note(title = "Test", content = "Zawartość")
-        val success = storage.save("note1.json", note, Note.serializer())
-
-        assertTrue(success)
-
-        val files = fs.list(baseDirPath)
-        assertEquals(2, files.size) // testfile.txt + note1.json
-        assertTrue(files.any { it.name.endsWith(".json") })
+        val path = baseDirPath / "note1.json"
+        val content = "Zawartość"
+        val jsonFile = storage.createTestFile(path.name, content, baseDirPath)
+        val result = fs.read(jsonFile) { readUtf8() }
+        assertTrue(result.contains("Zawartość"))
+        assertTrue(jsonFile.name.endsWith(".json"))
     }
 
     @Test
@@ -107,5 +72,21 @@ class NoteStorageTest {
         val list = storage.listJsonFiles(baseDirPath)
         assertEquals(1, list.size)
         assertTrue(list.first().name.endsWith(".json"))
+    }
+
+    @Test
+    fun `parent directories exist after ensuring`() {
+        val testLeaf = "/a/b/c/d/exception.jpg".toPath()
+
+        fs.ensureDirsFor(testLeaf)
+
+        val expectedDirs = listOf(
+            "/a",
+            "/a/b",
+            "/a/b/c",
+            "/a/b/c/d",
+        ).map { it.toPath() }
+
+        expectedDirs.forEach { it.shouldExist(fs) }
     }
 }

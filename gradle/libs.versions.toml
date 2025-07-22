@@ -16,6 +16,7 @@ apollo = "4.3.1"
 kstore = "1.0.0"
 buildConfig = "5.6.5"
 okio = "3.15.0"
+koin-bom = "4.0.3"
 
 [libraries]
 
@@ -46,6 +47,11 @@ kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" 
 kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
+
+# --- Koin ---
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-bom" }
+koin-android = { module = "io.insert-koin:koin-android" }
 
 [plugins]
 

@@ -1,11 +1,14 @@
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import java.awt.Dimension
+import pw.kmp.vasskrets.di.initKoin
 import pw.kmp.vasskrets.ui.App
+import java.awt.Dimension
 
 fun main() = application {
+    initKoin()
     Window(
         title = "Vasskrets",
         state = rememberWindowState(width = 800.dp, height = 600.dp),

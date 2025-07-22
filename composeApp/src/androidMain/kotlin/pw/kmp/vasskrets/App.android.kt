@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import pw.kmp.vasskrets.di.initKoin
 import pw.kmp.vasskrets.platform.initPlatformContext
 import pw.kmp.vasskrets.ui.App
 import kotlin.time.ExperimentalTime
@@ -14,6 +15,7 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         initPlatformContext(this)
+        initKoin()
         setContent { App() }
     }
 }

@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.apollo.runtime)
             implementation(libs.kstore)
             implementation(libs.okio)
+            implementation(libs.koin.core)
         }
 
         commonTest.dependencies {
@@ -63,6 +64,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kstore.file)
+            implementation(libs.koin.android)
         }
 
         jvmMain.dependencies {

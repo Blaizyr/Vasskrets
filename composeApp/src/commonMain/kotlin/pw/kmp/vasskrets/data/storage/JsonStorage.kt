@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import okio.buffer
 import pw.kmp.vasskrets.model.DataType
 import pw.kmp.vasskrets.model.Metadata
 import pw.kmp.vasskrets.platform.getPlatformFileSystem
@@ -37,7 +36,7 @@ class JsonStorage(
             val path = baseDir / filename
             ensureDirExists(path)
             val text = json.encodeToString(serializer, content)
-            fileSystem.write(path, mustCreate = false) { buffer().writeUtf8(text) }
+            fileSystem.write(path, mustCreate = false) { writeUtf8(text) }
             true
         } catch (e: Exception) {
             Logger.w(e) { "Save failed: $filename" }

@@ -7,7 +7,7 @@ import pw.kmp.vasskrets.data.datasource.LocalChatDataSource
 import pw.kmp.vasskrets.data.datasource.RemoteChatDataSource
 import pw.kmp.vasskrets.data.repository.ChatRepository
 import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.model.Chat
+import pw.kmp.vasskrets.domain.model.Chat
 
 val sharedModule = module {
     single { JsonStorage() }

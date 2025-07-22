@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.apollo.runtime)
             implementation(libs.kstore)
             implementation(libs.okio)
+            implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
         }
 

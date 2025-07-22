@@ -4,7 +4,7 @@ import kotlinx.serialization.KSerializer
 import okio.Path
 import okio.Path.Companion.toPath
 import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.model.Note
+import pw.kmp.vasskrets.domain.model.Note
 import pw.kmp.vasskrets.platform.provideBaseDir
 
 object NoteRepository {

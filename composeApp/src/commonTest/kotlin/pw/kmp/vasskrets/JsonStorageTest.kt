@@ -5,7 +5,7 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
-import pw.kmp.vasskrets.data.NoteStorage
+import pw.kmp.vasskrets.data.storage.JsonStorage
 import pw.kmp.vasskrets.model.Note
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -16,10 +16,10 @@ import kotlin.test.assertTrue
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class NoteStorageTest {
+class JsonStorageTest {
 
     private lateinit var fs: FileSystem
-    private lateinit var storage: NoteStorage
+    private lateinit var storage: JsonStorage
     private lateinit var baseDirPath: Path
 
     @BeforeTest
@@ -28,7 +28,7 @@ class NoteStorageTest {
         fs = FakeFileSystem().apply {
             ensureDirsFor(baseDirPath)
         }
-        storage = NoteStorage(baseDirPath, Json, fs)
+        storage = JsonStorage(baseDirPath, Json, fs)
     }
 
     @Test

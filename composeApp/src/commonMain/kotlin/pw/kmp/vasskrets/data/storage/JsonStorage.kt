@@ -7,6 +7,8 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
+import pw.kmp.vasskrets.model.DataType
+import pw.kmp.vasskrets.model.Metadata
 import pw.kmp.vasskrets.platform.getPlatformFileSystem
 import pw.kmp.vasskrets.platform.provideBaseDir
 
@@ -15,9 +17,19 @@ class JsonStorage(
     private val json: Json = Json { prettyPrint = true },
     private val fileSystem: FileSystem = getPlatformFileSystem(),
 ) {
-    private fun ensureDirExists(path: Path) {
-        val parent = path.parent ?: return
-        if (!fileSystem.exists(parent)) fileSystem.createDirectories(parent)
+
+    fun <T : Metadata> loadMetadatas(type: DataType<T>): List<T> {
+        val dir = baseDir / type.subDir
+        if (!fileSystem.exists(dir)) return emptyList()
+
+        return fileSystem.list(dir)
+            .filter { it.name.endsWith(".json") }
+            .mapNotNull { path ->
+                runCatching {
+                    val source = fileSystem.read(path) { readUtf8() }
+                    Json.decodeFromString(type.metadataDeserializer, source)
+                }.getOrNull()
+            }
     }
 
     fun <T> save(filename: String, content: T, serializer: KSerializer<T>): Boolean {
@@ -33,11 +45,12 @@ class JsonStorage(
         }
     }
 
-    fun <T> saveById(id: String, content: T, serializer: KSerializer<T>, subDir: String = ""): Boolean {
-        val fileName = "$id.json"
-        val fullPath = if (subDir.isEmpty()) baseDir / fileName else baseDir / subDir / fileName
-        return save(fullPath.toString(), content, serializer)
-    }
+    fun <T> saveById(
+        id: String,
+        content: T,
+        serializer: KSerializer<T>,
+        subDir: String = "",
+    ): Boolean = save(resolvePath(id, subDir).name, content, serializer)
 
     fun <T> load(path: Path, deserializer: KSerializer<T>): T? {
         return try {
@@ -51,11 +64,11 @@ class JsonStorage(
         }
     }
 
-    fun <T> loadById(id: String, deserializer: KSerializer<T>, subDir: String = ""): T? {
-        val fileName = "$id.json"
-        val fullPath = if (subDir.isEmpty()) baseDir / fileName else baseDir / subDir / fileName
-        return load(fullPath, deserializer)
-    }
+    fun <T> loadById(
+        id: String,
+        deserializer: KSerializer<T>,
+        subDir: String = ""
+    ): T? = load(resolvePath(id, subDir), deserializer)
 
     fun delete(path: Path): Boolean {
         return try {
@@ -67,6 +80,8 @@ class JsonStorage(
         }
     }
 
+    fun delete(id: String): Boolean = delete(resolvePath(id))
+
     fun listJsonFiles(dir: Path): List<Path> {
         return try {
             if (!fileSystem.exists(dir)) return emptyList()
@@ -75,6 +90,16 @@ class JsonStorage(
             Logger.w(e) { "List failed: $dir" }
             emptyList()
         }
+    }
+
+    private fun resolvePath(id: String, subDir: String = ""): Path {
+        val fileName = "$id.json"
+        return if (subDir.isEmpty()) baseDir / fileName else baseDir / subDir / fileName
+    }
+
+    private fun ensureDirExists(path: Path) {
+        val parent = path.parent ?: return
+        if (!fileSystem.exists(parent)) fileSystem.createDirectories(parent)
     }
 
 }

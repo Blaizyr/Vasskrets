@@ -17,6 +17,7 @@ kstore = "1.0.0"
 buildConfig = "5.6.5"
 okio = "3.15.0"
 koin-bom = "4.0.3"
+decompose = "3.3.0"
 
 [libraries]
 
@@ -52,6 +53,11 @@ okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", versio
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-bom" }
 koin-android = { module = "io.insert-koin:koin-android" }
+
+# --- Decompose ---
+decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-extensions = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+
 
 [plugins]
 

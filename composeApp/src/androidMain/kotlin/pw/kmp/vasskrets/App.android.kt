@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.arkivanov.decompose.DefaultComponentContext
+import pw.kmp.vasskrets.components.root.RootComponent
 import pw.kmp.vasskrets.di.initKoin
 import pw.kmp.vasskrets.platform.initPlatformContext
 import pw.kmp.vasskrets.ui.App
@@ -16,6 +18,9 @@ class AppActivity : ComponentActivity() {
         enableEdgeToEdge()
         initPlatformContext(this)
         initKoin()
-        setContent { App() }
+        val rootComponent = RootComponent(
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+        )
+        setContent { App(rootComponent) }
     }
 }

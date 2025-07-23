@@ -40,11 +40,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import pw.kmp.vasskrets.components.root.ConversationComponent
+import pw.kmp.vasskrets.components.root.HomeComponent
+import pw.kmp.vasskrets.components.root.LoginComponent
+import pw.kmp.vasskrets.components.root.NotesComponent
+import pw.kmp.vasskrets.components.root.RootComponent
 import pw.kmp.vasskrets.data.repository.NoteRepository
 import pw.kmp.vasskrets.domain.model.Note
 import pw.kmp.vasskrets.ui.theme.AppTheme
@@ -63,7 +70,27 @@ import vasskrets.composeapp.generated.resources.vasskrets
 
 @Preview
 @Composable
-internal fun App() = AppTheme {
+internal fun App(root: RootComponent) {
+    val childStack by root.childStack.subscribeAsState()
+
+    Children(stack = childStack) {
+        AppTheme {
+            when (val child = it.instance) {
+                is LoginComponent -> LoginScreen(child)
+                is HomeComponent -> HomeScreen(child)
+                is NotesComponent -> NotesScreen(child)
+                is ConversationComponent -> ConversationScreen(child)
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginScreen(component: LoginComponent) {}
+@Composable
+fun HomeScreen(component: HomeComponent) {}
+@Composable
+fun NotesScreen(component: NotesComponent) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf(NoteRepository.loadAll()) }

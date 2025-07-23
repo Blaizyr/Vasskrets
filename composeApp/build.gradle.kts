@@ -49,6 +49,8 @@ kotlin {
             implementation(libs.okio)
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
+            implementation(libs.decompose.core)
+            implementation(libs.decompose.extensions)
         }
 
         commonTest.dependencies {

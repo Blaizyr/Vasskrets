@@ -6,8 +6,11 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import org.koin.core.component.KoinComponent
+import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
+import pw.kmp.vasskrets.components.home.DefaultHomeComponent
+import pw.kmp.vasskrets.components.login.DefaultLoginComponent
+import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -40,13 +43,3 @@ class RootComponent(
         }
     }
 }
-
-interface LoginComponent
-interface HomeComponent
-interface NotesComponent
-interface ConversationComponent
-
-class DefaultLoginComponent(val onLoginSuccess: (sessionId: String) -> Unit, componentContext: ComponentContext) :  LoginComponent,  ComponentContext by componentContext, InstanceKeeper.Instance
-class DefaultHomeComponent(componentContext: ComponentContext) : HomeComponent, ComponentContext by componentContext, InstanceKeeper.Instance
-class DefaultNotesComponent(componentContext: ComponentContext) : NotesComponent, ComponentContext by componentContext, InstanceKeeper.Instance
-class DefaultConversationComponent(componentContext: ComponentContext) : ConversationComponent, ComponentContext by componentContext, InstanceKeeper.Instance

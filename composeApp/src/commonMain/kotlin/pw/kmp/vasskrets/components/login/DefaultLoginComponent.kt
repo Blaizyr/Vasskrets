@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +33,6 @@ interface LoginComponent {
     fun onPasswordChanged(password: String)
 }
 
-@FlowPreview
 class DefaultLoginComponent(
     val onLoginSuccess: (sessionId: String) -> Unit,
 //    val loginUseCase: LoginUseCase = DefaultLoginUseCase(gameClient),

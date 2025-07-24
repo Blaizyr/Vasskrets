@@ -7,7 +7,9 @@ import pw.kmp.vasskrets.data.datasource.LocalChatDataSource
 import pw.kmp.vasskrets.data.datasource.RemoteChatDataSource
 import pw.kmp.vasskrets.data.repository.ChatRepository
 import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.domain.model.Chat
+import pw.kmp.vasskrets.domain.model.chat.Chat
+import pw.kmp.vasskrets.domain.usecase.CreateNewConversationUseCase
+import pw.kmp.vasskrets.domain.usecase.SendTextMessageUseCase
 
 val sharedModule = module {
     single { JsonStorage() }
@@ -26,4 +28,6 @@ val sharedModule = module {
             get(named("remoteWebsocket"))
         )
     }
+    single { CreateNewConversationUseCase(get()) }
+    single { SendTextMessageUseCase(get()) }
 }

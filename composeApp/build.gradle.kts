@@ -68,6 +68,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kstore.file)
             implementation(libs.koin.android)
+            implementation(libs.decompose.extensions.jetbrains)
         }
 
         jvmMain.dependencies {
@@ -75,8 +76,12 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kstore.file)
+            implementation(libs.decompose.extensions.jetbrains)
         }
 
+        val wasmJsMain by getting {
+            dependencies {}
+        }
     }
 }
 

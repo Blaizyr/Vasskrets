@@ -1,8 +1,6 @@
 package pw.kmp.vasskrets.components.root
 
 import kotlinx.serialization.Serializable
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @Serializable
 sealed class Child {
@@ -15,7 +13,7 @@ sealed class Child {
     @Serializable
     data object Notes : Child()
 
-    @OptIn(ExperimentalUuidApi::class)
     @Serializable
-    data class Conversation(val conversationId: Uuid) : Child()
+    data object Conversations : Child()
+
 }

@@ -15,8 +15,8 @@ import pw.kmp.vasskrets.components.conversation.DefaultRootConversationComponent
 import pw.kmp.vasskrets.components.home.DefaultHomeComponent
 import pw.kmp.vasskrets.components.login.DefaultLoginComponent
 import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
-import pw.kmp.vasskrets.domain.usecase.CreateNewConversationUseCase
-import pw.kmp.vasskrets.domain.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
+import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

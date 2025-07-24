@@ -52,8 +52,8 @@ import pw.kmp.vasskrets.components.home.HomeComponent
 import pw.kmp.vasskrets.components.login.LoginComponent
 import pw.kmp.vasskrets.components.notes.NotesComponent
 import pw.kmp.vasskrets.components.root.RootComponent
-import pw.kmp.vasskrets.data.repository.NoteRepository
-import pw.kmp.vasskrets.domain.model.Note
+import pw.kmp.vasskrets.data.note.NoteRepository
+import pw.kmp.vasskrets.domain.note.Note
 import pw.kmp.vasskrets.ui.theme.AppTheme
 import pw.kmp.vasskrets.ui.theme.LocalThemeIsDark
 import vasskrets.composeapp.generated.resources.IndieFlower_Regular

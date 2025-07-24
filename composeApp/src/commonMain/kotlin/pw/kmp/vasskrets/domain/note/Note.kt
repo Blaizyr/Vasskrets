@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.domain.model
+package pw.kmp.vasskrets.domain.note
 
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock

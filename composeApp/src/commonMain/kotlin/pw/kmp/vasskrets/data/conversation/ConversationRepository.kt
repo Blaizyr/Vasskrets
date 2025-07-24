@@ -1,23 +1,23 @@
-package pw.kmp.vasskrets.data.repository
+package pw.kmp.vasskrets.data.conversation
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import pw.kmp.vasskrets.data.datasource.ChatDataSource
-import pw.kmp.vasskrets.domain.model.Chat
+import pw.kmp.vasskrets.data.conversation.datasource.ConversationDataSource
+import pw.kmp.vasskrets.domain.conversation.model.Conversation
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
-class ChatRepository(
-    private val localDataSource: ChatDataSource,
-    private val websocketApiDataSource: ChatDataSource,
-    private val httpsApiDataSource: ChatDataSource
+class ConversationRepository(
+    private val localDataSource: ConversationDataSource,
+    private val websocketApiDataSource: ConversationDataSource,
+    private val httpsApiDataSource: ConversationDataSource
 )  {
 
-    private val _activeChats = mutableMapOf<Uuid, MutableStateFlow<Chat>>()
+    private val _activeChats = mutableMapOf<Uuid, MutableStateFlow<Conversation>>()
 
-    suspend fun getChat(id: Uuid): StateFlow<Chat>? {
+    suspend fun getChat(id: Uuid): StateFlow<Conversation>? {
         val chat = localDataSource.loadChat(id) ?: return null
         return _activeChats.getOrPut(id) { MutableStateFlow(chat) }
     }

@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import pw.kmp.vasskrets.domain.model.chat.ChatSender
-import pw.kmp.vasskrets.domain.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.domain.conversation.model.Participant
+import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -44,6 +44,6 @@ class DefaultConversationComponent(
     }
 
     private suspend fun onSendMessage() {
-        sendTextMessageUseCase.invoke(conversationId, ChatSender.USER, uiState.value.text)
+        sendTextMessageUseCase.invoke(conversationId, Participant.USER, uiState.value.text)
     }
 }

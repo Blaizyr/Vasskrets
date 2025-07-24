@@ -2,27 +2,27 @@ package pw.kmp.vasskrets.di
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import pw.kmp.vasskrets.data.datasource.ChatDataSource
-import pw.kmp.vasskrets.data.datasource.LocalChatDataSource
-import pw.kmp.vasskrets.data.datasource.RemoteChatDataSource
-import pw.kmp.vasskrets.data.repository.ChatRepository
-import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.domain.model.chat.Chat
-import pw.kmp.vasskrets.domain.usecase.CreateNewConversationUseCase
-import pw.kmp.vasskrets.domain.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.data.conversation.datasource.ConversationDataSource
+import pw.kmp.vasskrets.data.conversation.datasource.LocalConversationDataSource
+import pw.kmp.vasskrets.data.conversation.datasource.RemoteConversationDataSource
+import pw.kmp.vasskrets.data.conversation.ConversationRepository
+import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.domain.conversation.model.Conversation
+import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
+import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 
 val sharedModule = module {
     single { JsonStorage() }
-    single<ChatDataSource>(named("local")) { LocalChatDataSource(get(), Chat.serializer()) }
-    single<ChatDataSource>(named("remoteApi")) { RemoteChatDataSource(get(), Chat.serializer()) }
-    single<ChatDataSource>(named("remoteWebsocket")) {
-        RemoteChatDataSource(
+    single<ConversationDataSource>(named("local")) { LocalConversationDataSource(get(), Conversation.serializer()) }
+    single<ConversationDataSource>(named("remoteApi")) { RemoteConversationDataSource(get(), Conversation.serializer()) }
+    single<ConversationDataSource>(named("remoteWebsocket")) {
+        RemoteConversationDataSource(
             get(),
-            Chat.serializer()
+            Conversation.serializer()
         )
     }
     single {
-        ChatRepository(
+        ConversationRepository(
             get(named("local")),
             get(named("remoteApi")),
             get(named("remoteWebsocket"))

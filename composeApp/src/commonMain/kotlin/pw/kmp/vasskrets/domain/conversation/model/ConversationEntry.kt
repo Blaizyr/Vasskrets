@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.domain.model.conversation
+package pw.kmp.vasskrets.domain.conversation.model
 
 import pw.kmp.vasskrets.components.conversation.ConversationComponent
 import kotlin.uuid.ExperimentalUuidApi

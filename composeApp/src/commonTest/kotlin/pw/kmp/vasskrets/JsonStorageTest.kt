@@ -5,8 +5,8 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
-import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.domain.model.Note
+import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.domain.note.Note
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

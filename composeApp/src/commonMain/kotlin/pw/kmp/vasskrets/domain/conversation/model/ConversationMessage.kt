@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.domain.model
+package pw.kmp.vasskrets.domain.conversation.model
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -9,9 +9,9 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
 @Serializable
-data class ChatMessage(
+data class ConversationMessage(
     val id: Uuid = Uuid.random(),
     val text: String,
-    val sender: ChatSender,
+    val sender: Participant,
     @Contextual val sentAt: Instant,
 )

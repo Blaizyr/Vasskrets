@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import pw.kmp.vasskrets.domain.model.conversation.ConversationEntry
-import pw.kmp.vasskrets.domain.usecase.CreateNewConversationUseCase
+import pw.kmp.vasskrets.domain.conversation.model.ConversationEntry
+import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

@@ -1,10 +1,10 @@
-package pw.kmp.vasskrets.data.repository
+package pw.kmp.vasskrets.data.note
 
 import kotlinx.serialization.KSerializer
 import okio.Path
 import okio.Path.Companion.toPath
-import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.domain.model.Note
+import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.domain.note.Note
 import pw.kmp.vasskrets.platform.provideBaseDir
 
 object NoteRepository {

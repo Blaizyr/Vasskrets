@@ -3,8 +3,8 @@ package pw.kmp.vasskrets
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import pw.kmp.vasskrets.data.storage.JsonStorage
-import pw.kmp.vasskrets.domain.model.Note
+import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.domain.note.Note
 
 internal val Path.isFile: Boolean get() = this.name.contains('.')
 

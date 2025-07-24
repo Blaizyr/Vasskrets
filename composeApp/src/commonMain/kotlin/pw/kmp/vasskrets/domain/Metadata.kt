@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.domain.model
+package pw.kmp.vasskrets.domain
 
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

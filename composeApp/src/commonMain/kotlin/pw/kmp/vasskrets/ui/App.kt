@@ -47,7 +47,7 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import pw.kmp.vasskrets.components.conversation.ConversationComponent
+import pw.kmp.vasskrets.components.conversation.RootConversationComponent
 import pw.kmp.vasskrets.components.home.HomeComponent
 import pw.kmp.vasskrets.components.login.LoginComponent
 import pw.kmp.vasskrets.components.notes.NotesComponent
@@ -79,7 +79,7 @@ internal fun App(root: RootComponent) {
                 is LoginComponent -> LoginScreen(child)
                 is HomeComponent -> HomeScreen(child)
                 is NotesComponent -> NotesScreen(child)
-                is ConversationComponent -> ConversationScreen(child)
+                is RootConversationComponent -> ConversationScreen(child)
             }
         }
     }

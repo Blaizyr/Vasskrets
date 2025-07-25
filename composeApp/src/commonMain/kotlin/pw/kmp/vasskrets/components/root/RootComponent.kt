@@ -8,7 +8,6 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import org.koin.core.component.KoinComponent
-import org.koin.mp.KoinPlatform
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
 import pw.kmp.vasskrets.components.conversation.DefaultRootConversationComponent
@@ -26,6 +25,16 @@ class RootComponent(
 
     private val navigation = StackNavigation<Child>()
 
+    private val createNewConversationUseCase = getKoin().get<CreateNewConversationUseCase>()
+    private val conversationFactory = ConversationComponentFactory { conversationId ->
+        val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
+        DefaultConversationComponent(
+            childContext(key = "conversation_$conversationId", lifecycle = null),
+            conversationId,
+            sendTextMessageUseCase
+        )
+    }
+
     val childStack: Value<ChildStack<Child, Any>> = childStack(
         source = navigation,
         serializer = Child.serializer(),
@@ -33,16 +42,6 @@ class RootComponent(
         handleBackButton = true,
         childFactory = ::createChild,
     )
-
-    private val createNewConversationUseCase = getKoin().get<CreateNewConversationUseCase>()
-    private val conversationFactory = ConversationComponentFactory { conversationId ->
-        val sendTextMessageUseCase = KoinPlatform.getKoin().get<SendTextMessageUseCase>()
-        DefaultConversationComponent(
-            childContext(key = "conversation_$conversationId", lifecycle = null),
-            conversationId,
-            sendTextMessageUseCase
-        )
-    }
 
     private fun createChild(child: Child, context: ComponentContext): Any {
         return when (child) {

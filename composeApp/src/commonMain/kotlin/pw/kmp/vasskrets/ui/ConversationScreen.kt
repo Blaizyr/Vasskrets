@@ -30,12 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import pw.kmp.vasskrets.components.conversation.ConversationComponent
+import pw.kmp.vasskrets.components.conversation.RootConversationComponent
 import pw.kmp.vasskrets.platform.getPlatformAdaptivePaddings
 
 @Composable
 fun ConversationScreen(
-    component: ConversationComponent
+    component: RootConversationComponent
 ) {
     // val uiState by conversationComponent.uiState.collectAsState() //
 

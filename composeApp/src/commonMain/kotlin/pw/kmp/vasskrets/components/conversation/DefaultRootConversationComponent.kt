@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package pw.kmp.vasskrets.components.conversation
 
 import com.arkivanov.decompose.ComponentContext
@@ -17,12 +15,14 @@ import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 interface RootConversationComponent {
     val conversations: StateFlow<List<ConversationEntry>>
     fun createNewConversation()
     fun closeConversation(id: Uuid)
 }
 
+@OptIn(ExperimentalUuidApi::class)
 class DefaultRootConversationComponent(
     componentContext: ComponentContext,
     private val createNewConversationUseCase: CreateNewConversationUseCase,

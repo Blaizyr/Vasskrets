@@ -5,5 +5,5 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 fun interface ConversationComponentFactory {
-    fun create(conversationId: Uuid): ConversationComponent
+    operator fun invoke(conversationId: Uuid): ConversationComponent
 }

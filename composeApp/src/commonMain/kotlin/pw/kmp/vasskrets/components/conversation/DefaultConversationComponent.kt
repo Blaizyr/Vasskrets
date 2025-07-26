@@ -34,7 +34,7 @@ class DefaultConversationComponent(
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    private val _uiState = MutableStateFlow(ConversationState(conversationId = Uuid.random()))
+    private val _uiState = MutableStateFlow(ConversationState(conversationId = conversationId))
     override val uiState: StateFlow<ConversationState> = _uiState.asStateFlow()
 
     override fun sendMessage() {

@@ -9,13 +9,14 @@ import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import org.koin.core.component.KoinComponent
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
+import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
-import pw.kmp.vasskrets.components.conversation.DefaultRootConversationComponent
 import pw.kmp.vasskrets.components.home.DefaultHomeComponent
 import pw.kmp.vasskrets.components.login.DefaultLoginComponent
 import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.platform.ConversationRouterProvider
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -51,12 +52,15 @@ class RootComponent(
                     navigation.replaceCurrent(Child.Home)
                 }
             )
+
             is Child.Home -> DefaultHomeComponent(componentContext = context)
             is Child.Notes -> DefaultNotesComponent(componentContext = context)
-            is Child.Conversations -> DefaultRootConversationComponent(
-                componentContext = context,
-                createNewConversationUseCase = createNewConversationUseCase,
-                conversationFactory = conversationFactory
+            is Child.Conversations -> ConversationNodeComponent(
+                router = ConversationRouterProvider(
+                    nodeComponentContext = context,
+                    createNewConversationUseCase = createNewConversationUseCase,
+                    factory = conversationFactory
+                )
             )
         }
     }

@@ -79,7 +79,11 @@ internal fun App(root: RootComponent) {
                 is LoginComponent -> LoginScreen(child)
                 is HomeComponent -> HomeScreen(child)
                 is NotesComponent -> NotesScreen(child)
-                is RootConversationComponent -> ConversationScreen(child)
+                is ConversationNode -> {
+                    if (child.router.activeComponents.value.isEmpty()) child.router.createNewConversation()
+                    val last = child.router.activeComponents.value.last().component
+                    ConversationScreen(last) //TODO improve handling of empty router.activeComponents #5
+                }
             }
         }
     }

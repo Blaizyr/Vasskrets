@@ -1,6 +1,7 @@
-package pw.kmp.vasskrets.domain
+package pw.kmp.vasskrets.data
 
 import kotlinx.serialization.KSerializer
+import pw.kmp.vasskrets.domain.Metadata
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
 import pw.kmp.vasskrets.domain.note.NoteMetadata
 

@@ -4,7 +4,7 @@ import kotlinx.serialization.KSerializer
 import pw.kmp.vasskrets.data.JsonStorage
 import pw.kmp.vasskrets.domain.conversation.model.Conversation
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
-import pw.kmp.vasskrets.domain.ChatType
+import pw.kmp.vasskrets.data.ChatType
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi

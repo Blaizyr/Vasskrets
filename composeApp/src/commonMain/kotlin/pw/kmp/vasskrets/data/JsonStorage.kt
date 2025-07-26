@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import pw.kmp.vasskrets.domain.DataType
 import pw.kmp.vasskrets.domain.Metadata
 import pw.kmp.vasskrets.platform.getPlatformFileSystem
 import pw.kmp.vasskrets.platform.provideBaseDir

@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,14 +41,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import pw.kmp.vasskrets.components.conversation.ConversationNode
 import pw.kmp.vasskrets.components.home.HomeComponent
 import pw.kmp.vasskrets.components.login.LoginComponent
 import pw.kmp.vasskrets.components.notes.NotesComponent
@@ -71,28 +69,23 @@ import vasskrets.composeapp.generated.resources.vasskrets
 @Preview
 @Composable
 internal fun App(root: RootComponent) {
-    val childStack by root.childStack.subscribeAsState()
+    val session by root.currentSession.collectAsState()
 
-    Children(stack = childStack) {
-        AppTheme {
-            when (val child = it.instance) {
-                is LoginComponent -> LoginScreen(child)
-                is HomeComponent -> HomeScreen(child)
-                is NotesComponent -> NotesScreen(child)
-                is ConversationNode -> {
-                    if (child.router.activeComponents.value.isEmpty()) child.router.createNewConversation()
-                    val last = child.router.activeComponents.value.last().component
-                    ConversationScreen(last) //TODO improve handling of empty router.activeComponents #5
-                }
-            }
-        }
+    when (/*session*/"logged in ;)") {
+        null -> LoginScreen(root.loginComponent)
+        else -> NavigationLayout(root.navigationComponent)
     }
 }
 
+
 @Composable
-fun LoginScreen(component: LoginComponent) {}
+fun LoginScreen(component: LoginComponent) {
+}
+
 @Composable
-fun HomeScreen(component: HomeComponent) {}
+fun HomeScreen(component: HomeComponent) {
+}
+
 @Composable
 fun NotesScreen(component: NotesComponent) {
     var title by remember { mutableStateOf("") }

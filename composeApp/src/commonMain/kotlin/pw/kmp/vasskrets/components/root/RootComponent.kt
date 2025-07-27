@@ -5,9 +5,14 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
+import pw.kmp.vasskrets.Session
+import pw.kmp.vasskrets.components.NavigationComponent
+import pw.kmp.vasskrets.components.NavigationConfig
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
@@ -24,44 +29,68 @@ class RootComponent(
     componentContext: ComponentContext,
 ) : ComponentContext by componentContext, KoinComponent {
 
-    private val navigation = StackNavigation<Child>()
+    private val _currentSession = MutableStateFlow<Session?>(null)
+    val currentSession: StateFlow<Session?> = _currentSession
+
+    private val navigation = StackNavigation<NavigationConfig>()
+
+    val loginComponent = DefaultLoginComponent(
+        componentContext = childContext(key = "login", lifecycle = null),
+        onLoginSuccess = { authSession ->
+            _currentSession.update { authSession }
+        }
+    )
 
     private val createNewConversationUseCase = getKoin().get<CreateNewConversationUseCase>()
     private val conversationFactory = ConversationComponentFactory { conversationId ->
         val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
         DefaultConversationComponent(
-            childContext(key = "conversation_$conversationId", lifecycle = null),
-            conversationId,
-            sendTextMessageUseCase
+            conversationId = conversationId,
+            sendTextMessageUseCase = sendTextMessageUseCase,
+            componentContext = childContext(key = "conversation_$conversationId", lifecycle = null)
         )
     }
 
-    val childStack: Value<ChildStack<Child, Any>> = childStack(
+    private val navigationStack: Value<ChildStack<NavigationConfig, Child>> = childStack(
         source = navigation,
-        serializer = Child.serializer(),
-        initialConfiguration = Child.Conversations,
+        serializer = NavigationConfig.serializer(),
+        initialConfiguration = NavigationConfig.Notes,
         handleBackButton = true,
-        childFactory = ::createChild,
+        childFactory = ::navigate,
     )
 
-    private fun createChild(child: Child, context: ComponentContext): Any {
-        return when (child) {
-            is Child.Login -> DefaultLoginComponent(
-                componentContext = context,
-                onLoginSuccess = { sessionId /* TODO sessionId implementation #4 */ ->
-                    navigation.replaceCurrent(Child.Home)
-                }
+    val navigationComponent = NavigationComponent(
+        componentContext = childContext(key = "navigation", lifecycle = null),
+        navigation = navigation,
+        navigationStack = navigationStack
+    )
+
+    private fun navigate(navConfig: NavigationConfig, context: ComponentContext): Child {
+        return when (navConfig) {
+
+            is NavigationConfig.Home -> Child.Home(
+                component = DefaultHomeComponent(componentContext = context)
             )
 
-            is Child.Home -> DefaultHomeComponent(componentContext = context)
-            is Child.Notes -> DefaultNotesComponent(componentContext = context)
-            is Child.Conversations -> ConversationNodeComponent(
-                router = ConversationRouterProvider(
-                    nodeComponentContext = context,
-                    createNewConversationUseCase = createNewConversationUseCase,
-                    factory = conversationFactory
+            is NavigationConfig.Notes -> Child.Notes(
+                component = DefaultNotesComponent(
+                    componentContext = context
                 )
             )
+
+            is NavigationConfig.Conversations -> Child.Conversations(
+                component = ConversationNodeComponent(
+                    router = ConversationRouterProvider(
+                        nodeComponentContext = context,
+                        createNewConversationUseCase = createNewConversationUseCase,
+                        factory = conversationFactory
+                    )
+                )
+            )
+
+            NavigationConfig.Profile -> TODO()
+            NavigationConfig.Settings -> TODO()
         }
     }
+
 }

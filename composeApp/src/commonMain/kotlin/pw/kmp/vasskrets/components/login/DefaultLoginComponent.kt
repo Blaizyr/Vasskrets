@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pw.kmp.vasskrets.Session
 import pw.kmp.vasskrets.validation.ValidationResult
+import kotlin.time.ExperimentalTime
 
 data class LoginState(
     val usernameInput: String = "",
@@ -33,8 +35,9 @@ interface LoginComponent {
     fun onPasswordChanged(password: String)
 }
 
+@OptIn(ExperimentalTime::class)
 class DefaultLoginComponent(
-    val onLoginSuccess: (sessionId: String) -> Unit,
+    val onLoginSuccess: (session: Session) -> Unit,
 //    val loginUseCase: LoginUseCase = DefaultLoginUseCase(gameClient),
     componentContext: ComponentContext,
 ) : LoginComponent, ComponentContext by componentContext, InstanceKeeper.Instance {
@@ -107,7 +110,13 @@ class DefaultLoginComponent(
         if (!usernameValid /*|| !passwordValid*/) return
         _uiState.update { it.copy(loginError = null) }
 
-        val result = Result.success("sessionId") //loginUseCase(state.usernameInput, state.passwordInput)
+        val result = Result.success(
+            Session(
+                id = "sessionId",
+                userId = "userId",
+                roles = listOf("role1", "role2")
+            )
+        ) //loginUseCase(state.usernameInput, state.passwordInput)
 
         result.onSuccess { session ->
             onLoginSuccess(session)

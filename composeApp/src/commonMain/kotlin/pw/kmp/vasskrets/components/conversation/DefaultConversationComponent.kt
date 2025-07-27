@@ -21,15 +21,16 @@ data class ConversationState(
 )
 
 interface ConversationComponent {
+    val componentContext: ComponentContext
     val uiState: StateFlow<ConversationState>
     fun sendMessage()
 }
 
 @OptIn(ExperimentalUuidApi::class)
 class DefaultConversationComponent(
-    componentContext: ComponentContext,
     private val conversationId: Uuid,
     private val sendTextMessageUseCase: SendTextMessageUseCase,
+    override val componentContext: ComponentContext,
 ) : ConversationComponent, ComponentContext by componentContext, InstanceKeeper.Instance {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)

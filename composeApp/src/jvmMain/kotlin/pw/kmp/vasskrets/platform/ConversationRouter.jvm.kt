@@ -29,13 +29,12 @@ actual class ConversationRouter(
     val dockedConversations: List<Entry.ConversationEntry> = emptyList()
 
     actual fun openConversation(id: Uuid) {
-        if (activeComponents.value.any { it.componentId == id }) return
         val component = factory(id)
 
         _activeConversations.update { current ->
             current + Entry.ConversationEntry(
-               componentId =  Uuid.random(),
-               component =  component,
+                componentId = Uuid.random(),
+                component = component,
             )
         }
     }
@@ -60,12 +59,12 @@ actual class ConversationRouter(
 
 actual object ConversationRouterProvider {
     actual operator fun invoke(
-        nodeComponentContext: ComponentContext,
+        routerComponentContext: ComponentContext,
         factory: ConversationComponentFactory,
         createNewConversationUseCase: CreateNewConversationUseCase,
     ): ConversationRouter {
         return ConversationRouter(
-            nodeContext = nodeComponentContext,
+            nodeContext = routerComponentContext,
             factory = factory,
             createNewConversationUseCase = createNewConversationUseCase,
             windowManager = getKoin().get<WindowManager>()

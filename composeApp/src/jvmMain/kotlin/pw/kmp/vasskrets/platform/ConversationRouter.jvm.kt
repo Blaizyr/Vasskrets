@@ -22,7 +22,7 @@ actual class ConversationRouter(
     private val factory: ConversationComponentFactory,
     private val createNewConversationUseCase: CreateNewConversationUseCase,
     private val windowManager: WindowManager,
-) {
+) : ComponentContext by nodeContext {
     private val scope = nodeContext.lifecycle.createCoroutineScope()
     private val _activeConversations = MutableStateFlow<List<Entry.ConversationEntry>>(emptyList())
     actual val activeComponents = _activeConversations.asStateFlow()

@@ -78,15 +78,22 @@ class RootComponent(
                 )
             )
 
-            is NavigationConfig.Conversations -> Child.Conversations(
-                component = ConversationNodeComponent(
-                    router = ConversationRouterProvider(
-                        nodeComponentContext = context,
-                        createNewConversationUseCase = createNewConversationUseCase,
-                        factory = conversationFactory
+            is NavigationConfig.Conversations -> {
+                val routerContext = context.childContext("router")
+                val nodeContext = context.childContext("node")
+
+                val router = ConversationRouterProvider(
+                    routerComponentContext = routerContext,
+                    createNewConversationUseCase = createNewConversationUseCase,
+                    factory = conversationFactory
+                )
+                Child.Conversations(
+                    component = ConversationNodeComponent(
+                        nodeComponentContext = nodeContext,
+                        router = router
                     )
                 )
-            )
+            }
 
             NavigationConfig.Profile -> TODO()
             NavigationConfig.Settings -> TODO()

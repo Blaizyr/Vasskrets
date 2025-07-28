@@ -17,8 +17,10 @@ interface ConversationNode {
 
 @OptIn(ExperimentalUuidApi::class)
 class ConversationNodeComponent(
-    override val router: ConversationRouter
-) : ConversationNode {
+    override val nodeComponentContext: ComponentContext,
+    override val router: ConversationRouter,
+    private val strategy: NodeStrategy
+) : ConversationNode, ComponentContext by nodeComponentContext, InstanceKeeper.Instance {
     private val conversationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun createNewConversation() {

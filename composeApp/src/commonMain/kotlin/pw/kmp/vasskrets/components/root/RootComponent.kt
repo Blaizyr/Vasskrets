@@ -90,10 +90,10 @@ class RootComponent(
                 val routerV2 = ConversationRouterV2(
                     context = routerContext,
                     createConversationUseCase = createConversation,
-                    conversationComponentFactory = conversationComponentFactory
                 )
                 Child.Conversations(
                     component = ConversationNodeComponent(
+                        factory = conversationComponentFactory,
                         context = nodeContext,
                         routerV2 = routerV2 //router
                     )

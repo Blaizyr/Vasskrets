@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import pw.kmp.vasskrets.components.Entry
-import pw.kmp.vasskrets.components.conversation.ConversationComponent
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
@@ -39,7 +38,6 @@ data class ConversationNavConfig(val id: Uuid)
 @OptIn(ExperimentalUuidApi::class)
 class ConversationRouterV2(
     private val context: ComponentContext,
-    private val conversationComponentFactory: ConversationComponentFactory,
     private val createConversationUseCase: CreateNewConversationUseCase,
 ) : ComponentContext by context {
 
@@ -71,6 +69,4 @@ class ConversationRouterV2(
         openConversation(newEntry)
     }
 
-    fun createComponent(config: ConversationNavConfig): ConversationComponent =
-        conversationComponentFactory(config.id)
 }

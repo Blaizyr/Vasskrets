@@ -1,7 +1,8 @@
 package pw.kmp.vasskrets.components.root
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import pw.kmp.vasskrets.components.conversation.ConversationNode
+import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import pw.kmp.vasskrets.components.home.HomeComponent
 import pw.kmp.vasskrets.components.notes.NotesComponent
 
@@ -15,7 +16,7 @@ sealed interface Child {
     data class Notes(val component: NotesComponent) : Child
 
     @Serializable
-    data class Conversations(val component: ConversationNode) : Child
+    data class Conversations(val component: @Contextual ConversationNodeComponent) : Child
 
     @Serializable
     data class Settings(val dupa : String) : Child

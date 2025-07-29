@@ -32,6 +32,7 @@ import pw.kmp.vasskrets.components.root.Child.Home
 import pw.kmp.vasskrets.components.root.Child.Notes
 import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
+import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
 import pw.kmp.vasskrets.ui.theme.AppTheme
 
 @Composable
@@ -104,14 +105,7 @@ fun NavigationLayout(
                 when (val child = it.instance) {
                     is Home -> HomeScreen(child.component)
                     is Notes -> NotesScreen(child.component)
-                    is Conversations -> {
-                        val router = child.component.router
-                        if (router.activeComponents.value.isEmpty()) {
-                            router.createNewConversation()
-                        }
-                        val last = router.activeComponents.value.last().component
-                        ConversationScreen(last) // TODO: improve handling of empty router.activeComponents #5
-                    }
+                    is Conversations -> { ConversationNavigation(child.component)        }
 
                     is Profile -> TODO()
                     is Settings -> TODO()

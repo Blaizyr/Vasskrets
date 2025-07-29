@@ -21,7 +21,7 @@ import pw.kmp.vasskrets.components.login.DefaultLoginComponent
 import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
-import pw.kmp.vasskrets.platform.ConversationRouterProvider
+import pw.kmp.vasskrets.platform.ConversationRouterV2
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -41,8 +41,8 @@ class RootComponent(
         }
     )
 
-    private val createNewConversationUseCase = getKoin().get<CreateNewConversationUseCase>()
-    private val conversationFactory = ConversationComponentFactory { conversationId ->
+    private val createConversation = getKoin().get<CreateNewConversationUseCase>()
+    private val conversationComponentFactory = ConversationComponentFactory { conversationId ->
         val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
         DefaultConversationComponent(
             conversationId = conversationId,
@@ -54,7 +54,7 @@ class RootComponent(
     private val navigationStack: Value<ChildStack<NavigationConfig, Child>> = childStack(
         source = navigation,
         serializer = NavigationConfig.serializer(),
-        initialConfiguration = NavigationConfig.Notes,
+        initialConfiguration = NavigationConfig.Conversations,
         handleBackButton = true,
         childFactory = ::navigate,
     )
@@ -82,15 +82,20 @@ class RootComponent(
                 val routerContext = context.childContext("router")
                 val nodeContext = context.childContext("node")
 
-                val router = ConversationRouterProvider(
-                    routerComponentContext = routerContext,
-                    createNewConversationUseCase = createNewConversationUseCase,
-                    factory = conversationFactory
+                /*val router = ConversationRouterProvider(
+                    context = routerContext,
+                    createConversation = createConversation,
+                    factory = conversationComponentFactory
+                )*/
+                val routerV2 = ConversationRouterV2(
+                    context = routerContext,
+                    createConversationUseCase = createConversation,
+                    conversationComponentFactory = conversationComponentFactory
                 )
                 Child.Conversations(
                     component = ConversationNodeComponent(
-                        nodeComponentContext = nodeContext,
-                        router = router
+                        context = nodeContext,
+                        routerV2 = routerV2 //router
                     )
                 )
             }

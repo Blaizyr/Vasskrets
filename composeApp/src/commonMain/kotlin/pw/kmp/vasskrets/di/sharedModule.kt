@@ -8,6 +8,7 @@ import pw.kmp.vasskrets.data.conversation.datasource.ConversationDataSource
 import pw.kmp.vasskrets.data.conversation.datasource.LocalConversationDataSource
 import pw.kmp.vasskrets.data.conversation.datasource.RemoteConversationDataSource
 import pw.kmp.vasskrets.domain.conversation.model.Conversation
+import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 
@@ -28,6 +29,7 @@ val sharedModule = module {
             get(named("remoteWebsocket"))
         )
     }
+    single { ConversationsMetadataUseCase(get()) }
     single { CreateNewConversationUseCase(get()) }
     single { SendTextMessageUseCase(get()) }
 }

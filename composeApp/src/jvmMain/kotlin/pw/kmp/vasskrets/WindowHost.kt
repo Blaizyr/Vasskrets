@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.window.Window
 import pw.kmp.vasskrets.components.Entry
-import pw.kmp.vasskrets.ui.ConversationScreen
+import pw.kmp.vasskrets.ui.conversation.ConversationScreen
 import pw.kmp.vasskrets.ui.NotesScreen
 import kotlin.uuid.ExperimentalUuidApi
 

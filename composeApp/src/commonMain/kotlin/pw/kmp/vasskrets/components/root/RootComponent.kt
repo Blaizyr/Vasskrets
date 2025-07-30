@@ -19,6 +19,7 @@ import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
 import pw.kmp.vasskrets.components.home.DefaultHomeComponent
 import pw.kmp.vasskrets.components.login.DefaultLoginComponent
 import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
+import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 import pw.kmp.vasskrets.platform.ConversationRouterV2
@@ -41,6 +42,7 @@ class RootComponent(
         }
     )
 
+    private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
     private val conversationComponentFactory = ConversationComponentFactory { conversationId ->
         val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
@@ -90,6 +92,7 @@ class RootComponent(
                 val routerV2 = ConversationRouterV2(
                     context = routerContext,
                     createConversationUseCase = createConversation,
+                    conversationsMetadataUseCase = conversationMetadataUseCase
                 )
                 Child.Conversations(
                     component = ConversationNodeComponent(

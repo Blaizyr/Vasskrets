@@ -7,6 +7,8 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.platform.ConversationNavConfig
@@ -47,8 +49,8 @@ class ConversationNodeComponent(
         }
     )
 
-    val activeComponents: List<Entry.ConversationEntry>
-        get() = childStack.value.items.map { it.instance }
+    val activeComponents: Flow<List<Entry.ConversationEntry>>
+        get() = childStack.value.items.mapNotNull { listOf(it.instance) }.asFlow()
 
     override fun createNewConversation() {
         onCreateNewConversation()

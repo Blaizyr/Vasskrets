@@ -9,6 +9,8 @@ import kotlinx.serialization.Serializable
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.createCoroutineScope
+import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
+import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -33,12 +35,13 @@ expect object ConversationRouterProvider {
 
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
-data class ConversationNavConfig(val id: Uuid)
+data class ConversationNavConfig(val id: Uuid, val metadata: ConversationMetadata)
 
 @OptIn(ExperimentalUuidApi::class)
 class ConversationRouterV2(
     private val context: ComponentContext,
     private val createConversationUseCase: CreateNewConversationUseCase,
+    private val conversationsMetadataUseCase: ConversationsMetadataUseCase,
 ) : ComponentContext by context {
 
     private val _activeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
@@ -48,20 +51,31 @@ class ConversationRouterV2(
 
     init {
         scope.launch {
-            val isEmpty = activeConfigs.value.isEmpty()
-            if (isEmpty) {
-                createNewConversation()
-            }
+            conversationsMetadataUseCase
+                .allConversations
+                .collect { map ->
+                    val previous = _activeConfigs.value
+                    val updated = map.map { metadata ->
+                        val existing = previous.find { it.id == metadata.id }
+                        if (existing?.metadata == metadata) existing
+                        else ConversationNavConfig(id = metadata.id, metadata = metadata)
+                    }
+
+                    if (updated != previous) {
+                        _activeConfigs.value = updated
+                    }
+
+                    if (map.isEmpty() && previous.isEmpty()) {
+                        createNewConversation()
+                    }
+                }
         }
     }
 
     fun openConversation(id: Uuid) {
-        val newConfig = ConversationNavConfig(id)
-        _activeConfigs.value = _activeConfigs.value + newConfig
     }
 
     fun closeConversation(id: Uuid) {
-        _activeConfigs.value = _activeConfigs.value.filterNot { it.id == id }
     }
 
     suspend fun createNewConversation() {

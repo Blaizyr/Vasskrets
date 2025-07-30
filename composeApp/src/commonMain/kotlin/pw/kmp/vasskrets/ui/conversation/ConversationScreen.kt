@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.ui
+package pw.kmp.vasskrets.ui.conversation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

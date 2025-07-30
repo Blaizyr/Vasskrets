@@ -1,65 +1,78 @@
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerValue
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
-import pw.kmp.vasskrets.ui.ScreenTarget
+import androidx.compose.ui.unit.dp
+import pw.kmp.vasskrets.components.NavigationTarget
 import pw.kmp.vasskrets.ui.adaptive.SizeClass
-import pw.kmp.vasskrets.ui.adaptive.classifySize
+import pw.kmp.vasskrets.ui.adaptive.rememberWindowSizeClass
 
 @Composable
 fun AdaptiveNavigationScaffold(
-    currentTarget: ScreenTarget,
-    onNavigate: (ScreenTarget) -> Unit,
+    navigationTargets: List<NavigationTarget>,
     topBar: @Composable () -> Unit = {},
-    bottomBar: @Composable (() -> Unit)? = null,
-    drawerContent: @Composable (() -> Unit)? = null,
-    railContent: @Composable (() -> Unit)? = null,
-    content: @Composable (ScreenTarget) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val windowInfo = LocalWindowInfo.current
-    val sizeClass = remember(windowInfo) {
-        windowInfo.containerSize.classifySize()
-    }
-
+    val sizeClass = rememberWindowSizeClass()
     when (sizeClass) {
         SizeClass.Compact -> {
             Scaffold(
                 topBar = topBar,
-                bottomBar = bottomBar ?: { BottomAppBar(/*currentTarget, onNavigate*/) {} },
-                content = { content(currentTarget) }
+                bottomBar = {
+                    NavigationBar(containerColor = Color(0xFF222222)) {
+                        navigationTargets.forEach { target ->
+                            NavigationBarItem(
+                                selected = target.isSelected,
+                                onClick = target.onClick,
+                                icon = target.icon,
+                                label = {
+                                    Text(
+                                        text = target.label,
+                                        maxLines = 1
+                                    )
+                                }
+                            )
+                        }
+                    }
+                },
+                content = { content() }
             )
         }
 
         SizeClass.Medium -> {
             ModalNavigationDrawer(
-                drawerContent = drawerContent ?: {
-                    ModalDrawerSheet(
-                        content = {
-                            Column {
-                                Text("Drawer")
-                                Button(onClick = { }) {
-                                    Text("Go")
-                                }
+                drawerContent = {
+                    ModalDrawerSheet {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            navigationTargets.forEach { target ->
+                                NavigationDrawerItem(
+                                    label = { Text(target.label) },
+                                    selected = target.isSelected,
+                                    onClick = target.onClick,
+                                    icon = target.icon
+                                )
                             }
-                        },
-                        drawerState = rememberDrawerState(DrawerValue.Closed),
-                    )
+                        }
+                    }
                 },
                 content = {
                     Scaffold(
                         topBar = topBar,
-                        content = { content(currentTarget) }
+                        content = { content() }
                     )
                 }
             )
@@ -67,17 +80,19 @@ fun AdaptiveNavigationScaffold(
 
         SizeClass.Expanded -> {
             Row {
-                railContent?.invoke()
-                    ?: NavigationRail(modifier = Modifier /*currentTarget, onNavigate*/) {
-                        Column {
-                            Text(
-                                "Rail"
-                            )
-                        }
+                NavigationRail(modifier = Modifier, containerColor = Color(0xFF222222)) {
+                    navigationTargets.forEach { target ->
+                        NavigationRailItem(
+                            selected = target.isSelected,
+                            onClick = target.onClick,
+                            icon = target.icon,
+                            label = { Text(target.label, maxLines = 1) }
+                        )
                     }
+                }
                 Scaffold(
                     topBar = topBar,
-                    content = { content(currentTarget) }
+                    content = { content() }
                 )
             }
         }

@@ -5,10 +5,12 @@ import kotlinx.serialization.Serializable
 import pw.kmp.vasskrets.domain.Metadata
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalUuidApi::class)
 @Serializable
 data class NoteMetadata(
-    override val id: String,
+    override val id: Uuid,
     @Contextual override val lastModified: Instant
 ) : Metadata

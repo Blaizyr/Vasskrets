@@ -39,8 +39,7 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
     private val serializer: KSerializer<MyNavState<T>>,
     private val childFactory: (T, ComponentContext) -> K,
     private val routeConfigsFlow: StateFlow<List<T>>,
-    private val matchConfigToTarget: (T, ViewTarget) -> Boolean
-) : NavigationStrategy, ComponentContext by componentContext {
+): ComponentContext by componentContext {
 
     private val navSource = SimpleNavigation<NavEvent<T>>()
     private val currentState = MutableStateFlow<MyNavState<T>>(MyNavState(emptyList()))
@@ -91,25 +90,5 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
         },
         childFactory = childFactory
     )
-
-    override fun dispatch(intent: ViewIntent): NavigationAction {
-        return try {
-            val config = currentState.value.childrenConfigs.find { matchConfigToTarget(it, intent.target) }
-                ?: return NavigationAction.Noop
-
-            when (intent.relation) {
-                ViewRelation.ShowAsDetail,
-                ViewRelation.OpenAsTab,
-                ViewRelation.ReplaceView -> {
-                    open(config)
-                    NavigationAction.CreateAndShow(intent.target)
-                }
-                ViewRelation.FocusView -> NavigationAction.FocusExisting(intent.target)
-                else -> NavigationAction.Noop
-            }
-        } catch (e: Exception) {
-            NavigationAction.Noop
-        }
-    }
 
 }

@@ -14,9 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import pw.kmp.vasskrets.components.NavigationTarget
+import pw.kmp.vasskrets.navigation.NavigationTarget
 import pw.kmp.vasskrets.ui.adaptive.SizeClass
 import pw.kmp.vasskrets.ui.adaptive.rememberWindowSizeClass
 
@@ -26,7 +25,6 @@ fun AdaptiveNavigationScaffold(
     topBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    val windowInfo = LocalWindowInfo.current
     val sizeClass = rememberWindowSizeClass()
     when (sizeClass) {
         SizeClass.Compact -> {

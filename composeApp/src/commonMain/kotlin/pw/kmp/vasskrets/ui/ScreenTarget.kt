@@ -1,7 +1,7 @@
 package pw.kmp.vasskrets.ui
 
-import pw.kmp.vasskrets.components.NavigationConfig
 import pw.kmp.vasskrets.components.root.Child
+import pw.kmp.vasskrets.navigation.NavigationConfig
 
 sealed class ScreenTarget {
     data object Home : ScreenTarget()
@@ -14,9 +14,9 @@ sealed class ScreenTarget {
 fun ScreenTarget.toNavigationConfig(): NavigationConfig = when(this) {
     ScreenTarget.Home -> NavigationConfig.Home
     ScreenTarget.Notes -> NavigationConfig.Notes
+    ScreenTarget.Conversations -> NavigationConfig.Conversations
     ScreenTarget.Profile -> NavigationConfig.Profile
     ScreenTarget.Settings -> NavigationConfig.Settings
-    ScreenTarget.Conversations -> NavigationConfig.Conversations
 }
 
 fun resolveTarget(child: Child): ScreenTarget = when(child) {

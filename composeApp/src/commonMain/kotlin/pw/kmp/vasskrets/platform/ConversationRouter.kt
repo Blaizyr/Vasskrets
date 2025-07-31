@@ -13,9 +13,6 @@ import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
-import pw.kmp.vasskrets.navigation.ViewIntent
-import pw.kmp.vasskrets.navigation.ViewRelation
-import pw.kmp.vasskrets.navigation.ViewTarget
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -52,24 +49,6 @@ class ConversationRouterV2(
     private val _routeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
     override val routeConfigs: StateFlow<List<ConversationNavConfig>> = _routeConfigs.asStateFlow()
 
-    override fun handle(intent: ViewIntent) {
-        when (intent.target) {
-            is ViewTarget.Conversation -> {
-                val id = intent.target.conversationId
-                when (intent.relation) {
-                    ViewRelation.ShowAsDetail,
-                    ViewRelation.OpenAsTab,
-                    ViewRelation.ReplaceView,
-                    ViewRelation.FocusView -> {
-                        openConversation(id)
-                    }
-                }
-            }
-            is ViewTarget.Note -> {
-                /*TODO handle Notes #9*/
-            }
-        }
-    }
 
     init {
         scope.launch {
@@ -94,15 +73,9 @@ class ConversationRouterV2(
         }
     }
 
-    fun openConversation(id: Uuid) {
-    }
-
-    fun closeConversation(id: Uuid) {
-    }
-
-    suspend fun createNewConversation() {
+    suspend fun createNewConversation(): ConversationNavConfig? {
         val newEntry = createConversationUseCase()
-        openConversation(newEntry)
+        return routeConfigs.value.find { it.id == newEntry }
     }
 
 }

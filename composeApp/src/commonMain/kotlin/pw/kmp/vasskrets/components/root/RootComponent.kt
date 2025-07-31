@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
 import pw.kmp.vasskrets.Session
-import pw.kmp.vasskrets.components.NavigationComponent
-import pw.kmp.vasskrets.components.NavigationConfig
+import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
@@ -22,8 +21,15 @@ import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
+import pw.kmp.vasskrets.navigation.MyNavState
+import pw.kmp.vasskrets.navigation.NavigationComponent
+import pw.kmp.vasskrets.navigation.NavigationConfig
+import pw.kmp.vasskrets.navigation.ViewTarget
+import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationRouterV2
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class RootComponent(
@@ -44,6 +50,7 @@ class RootComponent(
 
     private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
+
     private val conversationComponentFactory = ConversationComponentFactory { conversationId ->
         val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
         DefaultConversationComponent(
@@ -83,25 +90,37 @@ class RootComponent(
             is NavigationConfig.Conversations -> {
                 val routerContext = context.childContext("router")
                 val nodeContext = context.childContext("node")
+                val dispatcherContext = context.childContext("dispatcher")
 
-                /*val router = ConversationRouterProvider(
-                    context = routerContext,
-                    createConversation = createConversation,
-                    factory = conversationComponentFactory
-                )*/
                 val routerV2 = ConversationRouterV2(
                     context = routerContext,
                     createConversationUseCase = createConversation,
                     conversationsMetadataUseCase = conversationMetadataUseCase
                 )
+
+                val dispatcher = GenericNavigationDispatcher(
+                    componentContext = dispatcherContext,
+                    serializer = MyNavState.serializer(ConversationNavConfig.serializer()),
+                    childFactory = { config, ctx -> Entry.ConversationEntry(Uuid.random(), conversationComponentFactory(config.id)) },
+                    routeConfigsFlow = routerV2.routeConfigs,
+                    matchConfigToTarget = { config, target ->
+                        when (target) {
+                            is ViewTarget.Conversation -> config.id == target.conversationId
+                            else -> false
+                        }
+                    }
+                )
+
                 Child.Conversations(
                     component = ConversationNodeComponent(
                         factory = conversationComponentFactory,
                         context = nodeContext,
-                        routerV2 = routerV2 //router
+                        routerV2 = routerV2,
+                        navigationDispatcher = dispatcher
                     )
                 )
             }
+
 
             NavigationConfig.Profile -> TODO()
             NavigationConfig.Settings -> TODO()

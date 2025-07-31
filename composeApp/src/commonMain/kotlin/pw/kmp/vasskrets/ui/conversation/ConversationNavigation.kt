@@ -10,14 +10,14 @@ import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.stack.push
-import pw.kmp.vasskrets.components.NavigationTarget
+import pw.kmp.vasskrets.navigation.NavigationTarget
 import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun ConversationNavigation(node: ConversationNodeComponent) {
     val childStack by node.childStack.subscribeAsState()
-    val activeConfigs by node.routerV2.activeConfigs.collectAsState()
+    val activeConfigs by node.routerV2.routeConfigs.collectAsState()
 
     AdaptiveNavigationScaffold(
         navigationTargets =

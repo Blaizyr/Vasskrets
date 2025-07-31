@@ -1,16 +1,14 @@
 package pw.kmp.vasskrets.components.conversation
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
+import pw.kmp.vasskrets.navigation.ViewIntent
 import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationRouterV2
 import kotlin.uuid.ExperimentalUuidApi
@@ -29,6 +27,7 @@ interface ConversationNode {
 @OptIn(ExperimentalUuidApi::class)
 class ConversationNodeComponent(
     override val context: ComponentContext,
+    private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
     override val factory: ConversationComponentFactory,
 //    override val router: ConversationRouter,
     override val routerV2: ConversationRouterV2,
@@ -36,21 +35,27 @@ class ConversationNodeComponent(
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
     private val conversationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    val navigation = StackNavigation<ConversationNavConfig>()
+
+    val routeConfigs = routerV2.routeConfigs
+    val childrenState = navigationDispatcher.childrenState
+
+    fun onIntent(intent: ViewIntent) {
+        navigationDispatcher.dispatch(intent)
+    }
+
+/*    val navigation = StackNavigation<ConversationNavConfig>()
 
     val childStack = childStack(
         source = navigation,
         serializer = ConversationNavConfig.serializer(),
-        initialConfiguration = routerV2.activeConfigs.value.first(),
+        initialConfiguration = routerV2.routeConfigs.value.first(),
         handleBackButton = true,
         childFactory = { config, _ ->
             val instance = factory(config.id)
             Entry.ConversationEntry(config.id, instance)
         }
-    )
+    )*/
 
-    val activeComponents: Flow<List<Entry.ConversationEntry>>
-        get() = childStack.value.items.mapNotNull { listOf(it.instance) }.asFlow()
 
     override fun createNewConversation() {
         onCreateNewConversation()

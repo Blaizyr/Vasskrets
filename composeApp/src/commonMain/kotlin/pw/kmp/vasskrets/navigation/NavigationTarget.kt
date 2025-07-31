@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.components
+package pw.kmp.vasskrets.navigation
 
 import androidx.compose.runtime.Composable
 

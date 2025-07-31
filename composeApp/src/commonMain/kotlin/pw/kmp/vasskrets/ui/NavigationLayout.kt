@@ -79,7 +79,7 @@ fun NavigationLayout(component: NavigationComponent) {
 }
 
 @Composable
-fun IconPlacehoder() {
+fun IconPlaceholder() {
     Box(
         Modifier
             .size(24.dp)

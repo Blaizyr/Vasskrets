@@ -8,10 +8,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
+import pw.kmp.vasskrets.components.conversation.Router
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
+import pw.kmp.vasskrets.navigation.ViewIntent
+import pw.kmp.vasskrets.navigation.ViewRelation
+import pw.kmp.vasskrets.navigation.ViewTarget
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -42,19 +46,37 @@ class ConversationRouterV2(
     private val context: ComponentContext,
     private val createConversationUseCase: CreateNewConversationUseCase,
     private val conversationsMetadataUseCase: ConversationsMetadataUseCase,
-) : ComponentContext by context {
-
-    private val _activeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
-    val activeConfigs: StateFlow<List<ConversationNavConfig>> = _activeConfigs.asStateFlow()
+) : Router<ConversationNavConfig>, ComponentContext by context {
 
     private val scope = context.lifecycle.createCoroutineScope()
+    private val _routeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
+    override val routeConfigs: StateFlow<List<ConversationNavConfig>> = _routeConfigs.asStateFlow()
+
+    override fun handle(intent: ViewIntent) {
+        when (intent.target) {
+            is ViewTarget.Conversation -> {
+                val id = intent.target.conversationId
+                when (intent.relation) {
+                    ViewRelation.ShowAsDetail,
+                    ViewRelation.OpenAsTab,
+                    ViewRelation.ReplaceView,
+                    ViewRelation.FocusView -> {
+                        openConversation(id)
+                    }
+                }
+            }
+            is ViewTarget.Note -> {
+                /*TODO handle Notes #9*/
+            }
+        }
+    }
 
     init {
         scope.launch {
             conversationsMetadataUseCase
                 .allConversations
                 .collect { map ->
-                    val previous = _activeConfigs.value
+                    val previous = _routeConfigs.value
                     val updated = map.map { metadata ->
                         val existing = previous.find { it.id == metadata.id }
                         if (existing?.metadata == metadata) existing
@@ -62,7 +84,7 @@ class ConversationRouterV2(
                     }
 
                     if (updated != previous) {
-                        _activeConfigs.value = updated
+                        _routeConfigs.value = updated
                     }
 
                     if (map.isEmpty() && previous.isEmpty()) {

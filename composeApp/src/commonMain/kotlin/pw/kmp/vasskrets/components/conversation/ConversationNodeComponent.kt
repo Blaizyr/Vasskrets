@@ -15,7 +15,6 @@ import kotlin.uuid.Uuid
 interface ConversationNode {
     val context: ComponentContext
     val factory: ConversationComponentFactory
-//    val router: ConversationRouter
     val routerV2: ConversationRouterV2
     fun createNewConversation()
     fun closeConversation(id: Uuid)
@@ -24,9 +23,9 @@ interface ConversationNode {
 @OptIn(ExperimentalUuidApi::class)
 class ConversationNodeComponent(
     override val context: ComponentContext,
-    private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
     override val factory: ConversationComponentFactory,
     override val routerV2: ConversationRouterV2,
+    private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
 
     private val conversationScope = context.lifecycle.createCoroutineScope()
@@ -42,6 +41,10 @@ class ConversationNodeComponent(
         conversationScope.launch {
             onCloseConversation(id)
         }
+    }
+
+    fun openConversation(config: ConversationNavConfig) {
+        navigationDispatcher.open(config)
     }
 
     private fun onCreateNewConversation() {

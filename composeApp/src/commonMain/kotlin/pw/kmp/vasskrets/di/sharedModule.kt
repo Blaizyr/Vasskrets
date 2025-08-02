@@ -2,6 +2,7 @@ package pw.kmp.vasskrets.di
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import pw.kmp.vasskrets.InteractionEnvironment
 import pw.kmp.vasskrets.data.JsonStorage
 import pw.kmp.vasskrets.data.conversation.ConversationRepository
 import pw.kmp.vasskrets.data.conversation.datasource.ConversationDataSource
@@ -29,6 +30,7 @@ val sharedModule = module {
             get(named("remoteWebsocket"))
         )
     }
+    single { InteractionEnvironment() }
     single { ConversationsMetadataUseCase(get()) }
     single { CreateNewConversationUseCase(get()) }
     single { SendTextMessageUseCase(get()) }

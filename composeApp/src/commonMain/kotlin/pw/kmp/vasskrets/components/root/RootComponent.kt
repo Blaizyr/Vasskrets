@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
+import pw.kmp.vasskrets.InteractionEnvironment
 import pw.kmp.vasskrets.Session
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
@@ -25,7 +26,6 @@ import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
 import pw.kmp.vasskrets.navigation.MyNavState
 import pw.kmp.vasskrets.navigation.NavigationComponent
 import pw.kmp.vasskrets.navigation.NavigationConfig
-import pw.kmp.vasskrets.navigation.ViewTarget
 import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationRouterV2
 import kotlin.uuid.ExperimentalUuidApi
@@ -48,6 +48,7 @@ class RootComponent(
         }
     )
 
+    val interactionEnvironment = getKoin().get<InteractionEnvironment>()
     private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
 
@@ -101,14 +102,14 @@ class RootComponent(
                 val dispatcher = GenericNavigationDispatcher(
                     componentContext = dispatcherContext,
                     serializer = MyNavState.serializer(ConversationNavConfig.serializer()),
-                    childFactory = { config, ctx -> Entry.ConversationEntry(Uuid.random(), conversationComponentFactory(config.id)) },
+                    childFactory = { config, ctx ->
+                        Entry.ConversationEntry(
+                            Uuid.random(),
+                            conversationComponentFactory(config.id)
+                        )
+                    },
                     routeConfigsFlow = routerV2.routeConfigs,
-                    matchConfigToTarget = { config, target ->
-                        when (target) {
-                            is ViewTarget.Conversation -> config.id == target.conversationId
-                            else -> false
-                        }
-                    }
+                    interactionContext = interactionEnvironment
                 )
 
                 Child.Conversations(

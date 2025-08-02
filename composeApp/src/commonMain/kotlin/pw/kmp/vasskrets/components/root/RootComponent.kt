@@ -52,12 +52,12 @@ class RootComponent(
     private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
 
-    private val conversationComponentFactory = ConversationComponentFactory { conversationId ->
+    private val conversationComponentFactory = ConversationComponentFactory { conversationId, childContext ->
         val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
         DefaultConversationComponent(
             conversationId = conversationId,
             sendTextMessageUseCase = sendTextMessageUseCase,
-            componentContext = childContext(key = "conversation_$conversationId", lifecycle = null)
+            componentContext = childContext ?: childContext(key = "conversation_$conversationId", lifecycle = null)
         )
     }
 
@@ -102,10 +102,10 @@ class RootComponent(
                 val dispatcher = GenericNavigationDispatcher(
                     componentContext = dispatcherContext,
                     serializer = MyNavState.serializer(ConversationNavConfig.serializer()),
-                    childFactory = { config, ctx ->
+                    childFactory = { config, childContext ->
                         Entry.ConversationEntry(
                             Uuid.random(),
-                            conversationComponentFactory(config.id)
+                            conversationComponentFactory(config.id, childContext)
                         )
                     },
                     routeConfigsFlow = routerV2.routeConfigs,

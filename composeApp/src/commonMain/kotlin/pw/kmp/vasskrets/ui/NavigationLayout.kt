@@ -12,14 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import pw.kmp.vasskrets.components.NavigationComponent
-import pw.kmp.vasskrets.components.NavigationConfig
-import pw.kmp.vasskrets.components.NavigationTarget
 import pw.kmp.vasskrets.components.root.Child.Conversations
 import pw.kmp.vasskrets.components.root.Child.Home
 import pw.kmp.vasskrets.components.root.Child.Notes
 import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
+import pw.kmp.vasskrets.navigation.NavigationComponent
+import pw.kmp.vasskrets.navigation.NavigationConfig
+import pw.kmp.vasskrets.navigation.NavigationTarget
 import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
 import pw.kmp.vasskrets.ui.theme.AppTheme
 
@@ -33,7 +33,7 @@ fun NavigationLayout(component: NavigationComponent) {
             id = NavigationConfig.Home.toString(),
             label = "Home",
             icon = {
-                IconPlacehoder()
+                IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Home,
             onClick = { component.navigateTo(NavigationConfig.Home) }
@@ -42,7 +42,7 @@ fun NavigationLayout(component: NavigationComponent) {
             id = NavigationConfig.Notes.toString(),
             label = "Notes",
             icon = {
-                IconPlacehoder()
+                IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Notes,
             onClick = { component.navigateTo(NavigationConfig.Notes) }
@@ -51,7 +51,7 @@ fun NavigationLayout(component: NavigationComponent) {
             id = NavigationConfig.Conversations.toString(),
             label = "Conversations",
             icon = {
-                IconPlacehoder()
+                IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Conversations,
             onClick = { component.navigateTo(NavigationConfig.Conversations) }

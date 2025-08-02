@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import pw.kmp.vasskrets.InteractionContext
 import pw.kmp.vasskrets.createCoroutineScope
 
 @Serializable
@@ -39,18 +40,14 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
     private val serializer: KSerializer<MyNavState<T>>,
     private val childFactory: (T, ComponentContext) -> K,
     private val routeConfigsFlow: StateFlow<List<T>>,
+    private val interactionContext: InteractionContext
 ): ComponentContext by componentContext {
 
     private val navSource = SimpleNavigation<NavEvent<T>>()
     private val currentState = MutableStateFlow<MyNavState<T>>(MyNavState(emptyList()))
 
     init {
-        componentContext.lifecycle.createCoroutineScope().launch {
-            navSource.subscribe { navState ->
-                currentState.value = navState as MyNavState<T>
-            }
-        }
-        componentContext.lifecycle.createCoroutineScope().launch {
+          componentContext.lifecycle.createCoroutineScope().launch {
             routeConfigsFlow.collect { configs ->
                 val currentConfigs = currentState.value.childrenConfigs
                 val toAdd = configs.filterNot { it in currentConfigs }
@@ -68,7 +65,6 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
     fun close(config: T) {
         navSource.navigate(NavEvent.Close(config))
     }
-
     val childrenState: Value<List<Child.Created<T, K>>> = children(
         source = navSource,
         stateSerializer = serializer,

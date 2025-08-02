@@ -15,7 +15,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun ConversationNavigation(node: ConversationNodeComponent) {
     val childStack by node.childrenState.subscribeAsState()
-    val activeConfigs by node.routerV2.routeConfigs.collectAsState()
+    val activeConfigs by node.router.routeConfigs.collectAsState()
 
     AdaptiveNavigationScaffold(
         navigationTargets =

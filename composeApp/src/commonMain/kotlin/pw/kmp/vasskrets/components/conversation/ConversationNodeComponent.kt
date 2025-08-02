@@ -7,7 +7,7 @@ import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
 import pw.kmp.vasskrets.platform.ConversationNavConfig
-import pw.kmp.vasskrets.platform.ConversationRouterV2
+import pw.kmp.vasskrets.platform.ConversationRouter
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -15,7 +15,7 @@ import kotlin.uuid.Uuid
 interface ConversationNode {
     val context: ComponentContext
     val factory: ConversationComponentFactory
-    val routerV2: ConversationRouterV2
+    val router: ConversationRouter
     fun createNewConversation()
     fun closeConversation(id: Uuid)
 }
@@ -24,13 +24,13 @@ interface ConversationNode {
 class ConversationNodeComponent(
     override val context: ComponentContext,
     override val factory: ConversationComponentFactory,
-    override val routerV2: ConversationRouterV2,
+    override val router: ConversationRouter,
     private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
 
     private val conversationScope = context.lifecycle.createCoroutineScope()
 
-    val routeConfigs = routerV2.routeConfigs
+    val routeConfigs = router.routeConfigs
     val childrenState = navigationDispatcher.childrenState
 
     override fun createNewConversation() {
@@ -49,7 +49,7 @@ class ConversationNodeComponent(
 
     private fun onCreateNewConversation() {
         conversationScope.launch {
-            val navConfig = routerV2.createNewConversation()
+            val navConfig = router.createNewConversation()
             navConfig?.let { navigationDispatcher.open(it) }
         }
     }

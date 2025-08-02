@@ -27,7 +27,7 @@ import pw.kmp.vasskrets.navigation.MyNavState
 import pw.kmp.vasskrets.navigation.NavigationComponent
 import pw.kmp.vasskrets.navigation.NavigationConfig
 import pw.kmp.vasskrets.platform.ConversationNavConfig
-import pw.kmp.vasskrets.platform.ConversationRouterV2
+import pw.kmp.vasskrets.platform.ConversationRouter
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -93,7 +93,7 @@ class RootComponent(
                 val nodeContext = context.childContext("node")
                 val dispatcherContext = context.childContext("dispatcher")
 
-                val routerV2 = ConversationRouterV2(
+                val router = ConversationRouter(
                     context = routerContext,
                     createConversationUseCase = createConversation,
                     conversationsMetadataUseCase = conversationMetadataUseCase
@@ -108,7 +108,7 @@ class RootComponent(
                             conversationComponentFactory(config.id, childContext)
                         )
                     },
-                    routeConfigsFlow = routerV2.routeConfigs,
+                    routeConfigsFlow = router.routeConfigs,
                     interactionContext = interactionEnvironment
                 )
 
@@ -116,7 +116,7 @@ class RootComponent(
                     component = ConversationNodeComponent(
                         factory = conversationComponentFactory,
                         context = nodeContext,
-                        routerV2 = routerV2,
+                        router = router,
                         navigationDispatcher = dispatcher
                     )
                 )

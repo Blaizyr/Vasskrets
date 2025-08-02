@@ -40,31 +40,12 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
     private val serializer: KSerializer<MyNavState<T>>,
     private val childFactory: (T, ComponentContext) -> K,
     private val routeConfigsFlow: StateFlow<List<T>>,
-    private val interactionContext: InteractionContext
+    private val interactionContext: InteractionContext,
 ): ComponentContext by componentContext {
 
     private val navSource = SimpleNavigation<NavEvent<T>>()
     private val currentState = MutableStateFlow<MyNavState<T>>(MyNavState(emptyList()))
 
-    init {
-          componentContext.lifecycle.createCoroutineScope().launch {
-            routeConfigsFlow.collect { configs ->
-                val currentConfigs = currentState.value.childrenConfigs
-                val toAdd = configs.filterNot { it in currentConfigs }
-                val toRemove = currentConfigs.filterNot { it in configs }
-                toAdd.forEach { open(it) }
-                toRemove.forEach { close(it) }
-            }
-        }
-    }
-
-    fun open(config: T) {
-        navSource.navigate(NavEvent.Open(config))
-    }
-
-    fun close(config: T) {
-        navSource.navigate(NavEvent.Close(config))
-    }
     val childrenState: Value<List<Child.Created<T, K>>> = children(
         source = navSource,
         stateSerializer = serializer,
@@ -86,5 +67,25 @@ class GenericNavigationDispatcher<T : Any, K : Any>(
         },
         childFactory = childFactory
     )
+
+    init {
+          componentContext.lifecycle.createCoroutineScope().launch {
+            routeConfigsFlow.collect { configs ->
+                val currentConfigs = currentState.value.childrenConfigs
+                val toAdd = configs.filterNot { it in currentConfigs }
+                val toRemove = currentConfigs.filterNot { it in configs }
+                toAdd.forEach { open(it) }
+                toRemove.forEach { close(it) }
+            }
+        }
+    }
+
+    fun open(config: T) {
+        navSource.navigate(NavEvent.Open(config))
+    }
+
+    fun close(config: T) {
+        navSource.navigate(NavEvent.Close(config))
+    }
 
 }

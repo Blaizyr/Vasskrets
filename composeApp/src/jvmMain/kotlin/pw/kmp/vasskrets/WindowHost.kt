@@ -6,6 +6,7 @@ import androidx.compose.ui.window.Window
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.ui.conversation.ConversationScreen
 import pw.kmp.vasskrets.ui.NotesScreen
+import pw.kmp.vasskrets.ui.windowing.WindowManager
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

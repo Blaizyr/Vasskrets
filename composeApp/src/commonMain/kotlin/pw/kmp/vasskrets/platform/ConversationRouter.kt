@@ -29,7 +29,6 @@ class ConversationRouter(
     private val _routeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
     override val routeConfigs: StateFlow<List<ConversationNavConfig>> = _routeConfigs.asStateFlow()
 
-
     init {
         scope.launch {
             conversationsMetadataUseCase

@@ -12,6 +12,8 @@ import pw.kmp.vasskrets.domain.conversation.model.Conversation
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
+import pw.kmp.vasskrets.ui.windowing.NoOpWindowManager
+import pw.kmp.vasskrets.ui.windowing.WindowManager
 
 val sharedModule = module {
     single { JsonStorage() }
@@ -34,4 +36,5 @@ val sharedModule = module {
     single { ConversationsMetadataUseCase(get()) }
     single { CreateNewConversationUseCase(get()) }
     single { SendTextMessageUseCase(get()) }
+    single<WindowManager> { NoOpWindowManager() }
 }

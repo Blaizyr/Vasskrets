@@ -1,8 +1,8 @@
 package pw.kmp.vasskrets.components.conversation
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import io.ktor.util.Platform
 import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
 import pw.kmp.vasskrets.components.Entry
@@ -10,6 +10,7 @@ import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
 import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationRouter
+import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
 import pw.kmp.vasskrets.ui.windowing.WindowManager
 
@@ -22,6 +23,7 @@ interface ConversationNode {
     fun closeConversation(config: ConversationNavConfig)
 }
 
+@OptIn(ExperimentalDecomposeApi::class)
 class ConversationNodeComponent(
     override val context: ComponentContext,
     override val factory: ConversationComponentFactory,
@@ -61,12 +63,14 @@ class ConversationNodeComponent(
 
     private fun onOpenConversation(config: ConversationNavConfig) {
         navigationDispatcher.open(config)
-        if (platform == Platform.Jvm) {
-            childrenState.value.find { it == config }?.let {
-                windowManager.open(it.instance)
-            }
-        }
+
+        if (platform.family != PlatformFamily.JVM) return
+
+        childrenState.value.find { it.key == config }?.let {
+            windowManager.open(it.instance)
+        } ?: println("Theres no entry for convo navi config: $config")
     }
+
 
     private fun onCloseConversation(config: ConversationNavConfig) {
         navigationDispatcher.close(config)

@@ -1,7 +1,6 @@
-package pw.kmp.vasskrets
+package pw.kmp.vasskrets.ui.windowing
 
 import pw.kmp.vasskrets.components.Entry
-import pw.kmp.vasskrets.ui.windowing.WindowManager
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

@@ -6,18 +6,18 @@ import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.koin.mp.KoinPlatform.getKoin
-import pw.kmp.vasskrets.DefaultWindowManager
 import pw.kmp.vasskrets.WindowHost
 import pw.kmp.vasskrets.components.root.RootComponent
 import pw.kmp.vasskrets.di.desktopModule
 import pw.kmp.vasskrets.di.initKoin
 import pw.kmp.vasskrets.ui.App
+import pw.kmp.vasskrets.ui.windowing.WindowManager
 import java.awt.Dimension
 
 fun main() = application {
     initKoin(platformModule = desktopModule)
 
-    val windowManager = getKoin().get<DefaultWindowManager>()
+    val windowManager = getKoin().get<WindowManager>()
 
     WindowHost(windowManager)
 

@@ -11,7 +11,7 @@ class DefaultWindowManager : WindowManager {
     override val windows: Map<Uuid, Entry<*>> get() = _openWindows
 
     override fun open(entry: Entry<*>) {
-        _openWindows.values.add(entry)
+        _openWindows[entry.componentId] = entry
     }
 
     override fun dock(windowId: Uuid): Entry<*>? {

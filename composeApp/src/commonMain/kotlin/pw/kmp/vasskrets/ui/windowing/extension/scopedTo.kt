@@ -14,8 +14,11 @@ fun <T : Any> WindowManager.scopedTo(type: KClass<T>): DomainWindowScope<T> {
 
         override val windows: Map<Uuid, Entry<T>>
             get() = this@scopedTo.windows
+                .value
+                .windows
                 .filterValues { type.isInstance(it.component) }
                 .mapValues { (_, v) -> v as Entry<T> }
+
 
         override fun open(entry: Entry<T>) {
             this@scopedTo.open(entry)

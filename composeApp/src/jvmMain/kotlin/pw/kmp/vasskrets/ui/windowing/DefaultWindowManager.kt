@@ -11,24 +11,23 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class DefaultWindowManager : WindowManager {
 
-    private val _windows = MutableStateFlow(WindowManagerState())
-    override val windows: StateFlow<WindowManagerState> = _windows.asStateFlow()
+    private val _state = MutableStateFlow(WindowManagerState())
+    override val state: StateFlow<WindowManagerState> = _state.asStateFlow()
 
     override fun open(entry: Entry<*>) {
-        val newWindowId = Uuid.random()
-        _windows.update { currentState ->
+        _state.update { currentState ->
             currentState.copy(
-                windows = currentState.windows + (newWindowId to entry)
+                windows = currentState.windows + entry
             )
         }
     }
 
     override fun dock(windowId: Uuid): Entry<*>? {
-        val entryToDock = _windows.value.windows[windowId]
+        val entryToDock = state.value.windows.find { it == windowId }
         if (entryToDock != null) {
-            _windows.update { currentState ->
+            _state.update { currentState ->
                 currentState.copy(
-                    windows = currentState.windows - windowId
+                    windows = currentState.windows - entryToDock
                 )
             }
         }
@@ -36,13 +35,13 @@ class DefaultWindowManager : WindowManager {
     }
 
     override fun close(componentId: Uuid) {
-        val matchingWindowEntry = _windows.value.windows.entries.find { (_, entry) ->
+        val matchingWindowEntry = _state.value.windows.find { entry ->
             entry.componentId == componentId
         }
         if (matchingWindowEntry != null) {
-            _windows.update { currentState ->
+            _state.update { currentState ->
                 currentState.copy(
-                    windows = currentState.windows - matchingWindowEntry.key
+                    windows = currentState.windows - matchingWindowEntry
                 )
             }
         }

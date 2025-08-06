@@ -1,6 +1,7 @@
 package pw.kmp.vasskrets
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.window.Window
 import pw.kmp.vasskrets.components.Entry
@@ -12,10 +13,10 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun WindowHost(windowManager: WindowManager) {
-    val openWindows = windowManager.windows.value.windows.values.toList()
+    val openWindows = windowManager.state.collectAsState().value.windows
 
     for (window in openWindows) {
-        key(window.componentId) {
+        key(window.componentId ) {
             Window(
                 onCloseRequest = {
                     windowManager.close(window.componentId)

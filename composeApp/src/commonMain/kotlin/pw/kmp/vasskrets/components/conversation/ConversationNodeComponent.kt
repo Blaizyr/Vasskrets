@@ -13,7 +13,7 @@ import pw.kmp.vasskrets.platform.ConversationsController
 import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
 import pw.kmp.vasskrets.ui.windowing.WindowManager
-import pw.kmp.vasskrets.ui.windowing.extension.scoped
+import pw.kmp.vasskrets.ui.windowing.extension.scopedReactive
 import kotlin.uuid.ExperimentalUuidApi
 
 interface ConversationNode {
@@ -36,8 +36,7 @@ class ConversationNodeComponent(
     private val conversationScope = context.lifecycle.createCoroutineScope()
 
     private val windowManager = getKoin().get<WindowManager>()
-    val windowScope = windowManager.scoped<Entry.ConversationEntry>()
-    val windowedComponents = windowScope.windows
+    val conversationWindows = windowManager.scopedReactive<Entry.ConversationEntry>()
 
     val childrenState = navigationDispatcher.childrenState
 

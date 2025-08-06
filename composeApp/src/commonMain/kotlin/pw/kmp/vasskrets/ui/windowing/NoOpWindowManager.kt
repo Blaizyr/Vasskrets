@@ -10,7 +10,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class NoOpWindowManager : WindowManager {
     private val _windows = MutableStateFlow(WindowManagerState())
-    override val windows: StateFlow<WindowManagerState> = _windows.asStateFlow()
+    override val state: StateFlow<WindowManagerState> = _windows.asStateFlow()
     override fun open(entry: Entry<*>) {}
     override fun dock(windowId: Uuid): Entry<*>? = null
     override fun close(componentId: Uuid) {}

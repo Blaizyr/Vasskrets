@@ -4,15 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.window.Window
 import pw.kmp.vasskrets.components.Entry
-import pw.kmp.vasskrets.ui.conversation.ConversationScreen
 import pw.kmp.vasskrets.ui.NotesScreen
+import pw.kmp.vasskrets.ui.conversation.ConversationScreen
 import pw.kmp.vasskrets.ui.windowing.WindowManager
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun WindowHost(windowManager: WindowManager) {
-    val openWindows = windowManager.windows.values.toList()
+    val openWindows = windowManager.windows.value.windows.values.toList()
 
     for (window in openWindows) {
         key(window.componentId) {

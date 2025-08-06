@@ -9,7 +9,7 @@ import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
 import pw.kmp.vasskrets.platform.ConversationNavConfig
-import pw.kmp.vasskrets.platform.ConversationRouter
+import pw.kmp.vasskrets.platform.ConversationsController
 import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
 import pw.kmp.vasskrets.ui.windowing.WindowManager
@@ -17,7 +17,7 @@ import pw.kmp.vasskrets.ui.windowing.WindowManager
 interface ConversationNode {
     val context: ComponentContext
     val factory: ConversationComponentFactory
-    val router: ConversationRouter
+    val controller: ConversationsController
     fun createNewConversation()
     fun openConversation(config: ConversationNavConfig)
     fun closeConversation(config: ConversationNavConfig)
@@ -27,7 +27,7 @@ interface ConversationNode {
 class ConversationNodeComponent(
     override val context: ComponentContext,
     override val factory: ConversationComponentFactory,
-    override val router: ConversationRouter,
+    override val controller: ConversationsController,
     private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
 
@@ -35,7 +35,7 @@ class ConversationNodeComponent(
 
     private val windowManager = getKoin().get<WindowManager>()
 
-    val routeConfigs = router.routeConfigs
+    val routeConfigs = controller.availableItems
     val childrenState = navigationDispatcher.childrenState
 
     override fun createNewConversation() {
@@ -57,7 +57,7 @@ class ConversationNodeComponent(
     }
 
     private suspend fun onCreateNewConversation() {
-        val navConfig = router.createNewConversation()
+        val navConfig = controller.createNewConversation()
         navConfig?.let { navigationDispatcher.open(it) }
     }
 

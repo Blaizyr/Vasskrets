@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import pw.kmp.vasskrets.components.conversation.Router
+import pw.kmp.vasskrets.components.conversation.Controller
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
@@ -19,22 +19,22 @@ import kotlin.uuid.Uuid
 data class ConversationNavConfig(val id: Uuid, val metadata: ConversationMetadata)
 
 @OptIn(ExperimentalUuidApi::class)
-class ConversationRouter(
+class ConversationsController(
     private val context: ComponentContext,
     private val createConversationUseCase: CreateNewConversationUseCase,
     private val conversationsMetadataUseCase: ConversationsMetadataUseCase,
-) : Router<ConversationNavConfig>, ComponentContext by context {
+) : Controller<ConversationNavConfig>, ComponentContext by context {
 
     private val scope = context.lifecycle.createCoroutineScope()
-    private val _routeConfigs = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
-    override val routeConfigs: StateFlow<List<ConversationNavConfig>> = _routeConfigs.asStateFlow()
+    private val _availableConversationIdentities = MutableStateFlow<List<ConversationNavConfig>>(emptyList())
+    override val availableItems: StateFlow<List<ConversationNavConfig>> = _availableConversationIdentities.asStateFlow()
 
     init {
         scope.launch {
             conversationsMetadataUseCase
                 .allConversations
                 .collect { map ->
-                    val previous = _routeConfigs.value
+                    val previous = _availableConversationIdentities.value
                     val updated = map.map { metadata ->
                         val existing = previous.find { it.id == metadata.id }
                         if (existing?.metadata == metadata) existing
@@ -42,7 +42,7 @@ class ConversationRouter(
                     }
 
                     if (updated != previous) {
-                        _routeConfigs.value = updated
+                        _availableConversationIdentities.value = updated
                     }
 
                     if (map.isEmpty() && previous.isEmpty()) {
@@ -54,7 +54,7 @@ class ConversationRouter(
 
     suspend fun createNewConversation(): ConversationNavConfig? {
         val newEntry = createConversationUseCase()
-        return routeConfigs.value.find { it.id == newEntry }
+        return availableItems.value.find { it.id == newEntry }
     }
 
 }

@@ -7,35 +7,38 @@ import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
 import pw.kmp.vasskrets.components.Entry
 import pw.kmp.vasskrets.createCoroutineScope
+import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
-import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationsController
 import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
 import pw.kmp.vasskrets.ui.windowing.WindowManager
+import pw.kmp.vasskrets.ui.windowing.extension.scoped
+import kotlin.uuid.ExperimentalUuidApi
 
 interface ConversationNode {
     val context: ComponentContext
     val factory: ConversationComponentFactory
     val controller: ConversationsController
     fun createNewConversation()
-    fun openConversation(config: ConversationNavConfig)
-    fun closeConversation(config: ConversationNavConfig)
+    fun openConversation(config: ConversationDestinationConfig)
+    fun closeConversation(config: ConversationDestinationConfig)
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class, ExperimentalUuidApi::class)
 class ConversationNodeComponent(
     override val context: ComponentContext,
     override val factory: ConversationComponentFactory,
     override val controller: ConversationsController,
-    private val navigationDispatcher: GenericNavigationDispatcher<ConversationNavConfig, Entry.ConversationEntry>,
+    private val navigationDispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, Entry.ConversationEntry>,
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
 
     private val conversationScope = context.lifecycle.createCoroutineScope()
 
     private val windowManager = getKoin().get<WindowManager>()
+    val windowScope = windowManager.scoped<Entry.ConversationEntry>()
+    val windowedComponents = windowScope.windows
 
-    val routeConfigs = controller.availableItems
     val childrenState = navigationDispatcher.childrenState
 
     override fun createNewConversation() {
@@ -44,24 +47,30 @@ class ConversationNodeComponent(
         }
     }
 
-    override fun openConversation(config: ConversationNavConfig) {
+    override fun openConversation(config: ConversationDestinationConfig) {
         conversationScope.launch {
             onOpenConversation(config)
         }
     }
 
-    override fun closeConversation(config: ConversationNavConfig) {
+    override fun closeConversation(config: ConversationDestinationConfig) {
         conversationScope.launch {
             onCloseConversation(config)
         }
     }
 
     private suspend fun onCreateNewConversation() {
-        val navConfig = controller.createNewConversation()
-        navConfig?.let { navigationDispatcher.open(it) }
+        val newConversationIdentity = controller.createNewConversation()
+        newConversationIdentity?.let {
+            navigationDispatcher.open(
+                ConversationDestinationConfig(
+                    conversationUuid = it.id
+                )
+            )
+        }
     }
 
-    private fun onOpenConversation(config: ConversationNavConfig) {
+    private fun onOpenConversation(config: ConversationDestinationConfig) {
         navigationDispatcher.open(config)
 
         if (platform.family != PlatformFamily.JVM) return
@@ -72,7 +81,7 @@ class ConversationNodeComponent(
     }
 
 
-    private fun onCloseConversation(config: ConversationNavConfig) {
+    private fun onCloseConversation(config: ConversationDestinationConfig) {
         navigationDispatcher.close(config)
     }
 }

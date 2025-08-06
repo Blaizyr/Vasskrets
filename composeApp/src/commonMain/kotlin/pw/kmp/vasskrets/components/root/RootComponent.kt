@@ -19,6 +19,7 @@ import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
 import pw.kmp.vasskrets.components.home.DefaultHomeComponent
 import pw.kmp.vasskrets.components.login.DefaultLoginComponent
 import pw.kmp.vasskrets.components.notes.DefaultNotesComponent
+import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
@@ -26,10 +27,8 @@ import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
 import pw.kmp.vasskrets.navigation.MyNavState
 import pw.kmp.vasskrets.navigation.NavigationComponent
 import pw.kmp.vasskrets.navigation.NavigationConfig
-import pw.kmp.vasskrets.platform.ConversationNavConfig
 import pw.kmp.vasskrets.platform.ConversationsController
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class RootComponent(
@@ -52,14 +51,16 @@ class RootComponent(
     private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
 
-    private val conversationComponentFactory = ConversationComponentFactory { conversationId, childContext ->
-        val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
-        DefaultConversationComponent(
-            conversationId = conversationId,
-            sendTextMessageUseCase = sendTextMessageUseCase,
-            componentContext = childContext ?: childContext(key = "conversation_$conversationId", lifecycle = null)
-        )
-    }
+    private val conversationComponentFactory =
+        ConversationComponentFactory { conversationId, childContext ->
+            val sendTextMessageUseCase = getKoin().get<SendTextMessageUseCase>()
+            DefaultConversationComponent(
+                conversationId = conversationId,
+                sendTextMessageUseCase = sendTextMessageUseCase,
+                componentContext = childContext
+                    ?: childContext(key = "conversation_$conversationId", lifecycle = null)
+            )
+        }
 
     private val navigationStack: Value<ChildStack<NavigationConfig, Child>> = childStack(
         source = navigation,
@@ -99,18 +100,19 @@ class RootComponent(
                     conversationsMetadataUseCase = conversationMetadataUseCase
                 )
 
-                val dispatcher = GenericNavigationDispatcher(
-                    componentContext = dispatcherContext,
-                    serializer = MyNavState.serializer(ConversationNavConfig.serializer()),
-                    childFactory = { config, childContext ->
-                        Entry.ConversationEntry(
-                            Uuid.random(),
-                            conversationComponentFactory(config.id, childContext)
-                        )
-                    },
-                    routeConfigsFlow = controller.availableItems,
-                    interactionContext = interactionEnvironment
-                )
+                val dispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, Entry.ConversationEntry> =
+                    GenericNavigationDispatcher(
+                        serializer = MyNavState.serializer(ConversationDestinationConfig.serializer()),
+                        childFactory = { config, childContext ->
+                            Entry.ConversationEntry(
+                                config.configUuid,
+                                conversationComponentFactory(config.conversationUuid, childContext)
+                            )
+                        },
+//                        routeConfigsFlow = controller.availableItems,
+                        componentContext = dispatcherContext,
+                        interactionContext = interactionEnvironment
+                    )
 
                 Child.Conversations(
                     component = ConversationNodeComponent(

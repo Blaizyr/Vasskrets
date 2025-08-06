@@ -15,13 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import pw.kmp.vasskrets.navigation.NavigationTarget
+import pw.kmp.vasskrets.navigation.NavItem
 import pw.kmp.vasskrets.ui.adaptive.SizeClass
 import pw.kmp.vasskrets.ui.adaptive.rememberWindowSizeClass
 
 @Composable
 fun AdaptiveNavigationScaffold(
-    navigationTargets: List<NavigationTarget>,
+    navItems: List<NavItem>,
     topBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
@@ -32,7 +32,7 @@ fun AdaptiveNavigationScaffold(
                 topBar = topBar,
                 bottomBar = {
                     NavigationBar(containerColor = Color(0xFF222222)) {
-                        navigationTargets.forEach { target ->
+                        navItems.forEach { target ->
                             NavigationBarItem(
                                 selected = target.isSelected,
                                 onClick = target.onClick,
@@ -56,7 +56,7 @@ fun AdaptiveNavigationScaffold(
                 drawerContent = {
                     ModalDrawerSheet {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            navigationTargets.forEach { target ->
+                            navItems.forEach { target ->
                                 NavigationDrawerItem(
                                     label = { Text(target.label) },
                                     selected = target.isSelected,
@@ -79,7 +79,7 @@ fun AdaptiveNavigationScaffold(
         SizeClass.Expanded -> {
             Row {
                 NavigationRail(modifier = Modifier, containerColor = Color(0xFF222222)) {
-                    navigationTargets.forEach { target ->
+                    navItems.forEach { target ->
                         NavigationRailItem(
                             selected = target.isSelected,
                             onClick = target.onClick,

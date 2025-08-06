@@ -19,7 +19,7 @@ import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
 import pw.kmp.vasskrets.navigation.NavigationComponent
 import pw.kmp.vasskrets.navigation.NavigationConfig
-import pw.kmp.vasskrets.navigation.NavigationTarget
+import pw.kmp.vasskrets.navigation.NavItem
 import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
 import pw.kmp.vasskrets.ui.theme.AppTheme
 
@@ -29,7 +29,7 @@ fun NavigationLayout(component: NavigationComponent) {
     val currentTarget = resolveTarget(childStack.active.instance)
 
     val targets = listOf(
-        NavigationTarget(
+        NavItem(
             id = NavigationConfig.Home.toString(),
             label = "Home",
             icon = {
@@ -38,7 +38,7 @@ fun NavigationLayout(component: NavigationComponent) {
             isSelected = currentTarget == ScreenTarget.Home,
             onClick = { component.navigateTo(NavigationConfig.Home) }
         ),
-        NavigationTarget(
+        NavItem(
             id = NavigationConfig.Notes.toString(),
             label = "Notes",
             icon = {
@@ -47,7 +47,7 @@ fun NavigationLayout(component: NavigationComponent) {
             isSelected = currentTarget == ScreenTarget.Notes,
             onClick = { component.navigateTo(NavigationConfig.Notes) }
         ),
-        NavigationTarget(
+        NavItem(
             id = NavigationConfig.Conversations.toString(),
             label = "Conversations",
             icon = {
@@ -59,7 +59,7 @@ fun NavigationLayout(component: NavigationComponent) {
     )
 
     AdaptiveNavigationScaffold(
-        navigationTargets = targets,
+        navItems = targets,
         topBar = {},
         content = {
             AppTheme {

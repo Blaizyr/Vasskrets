@@ -75,7 +75,7 @@ internal fun App(root: RootComponent) {
 
     when (/*session*/"logged in ;)") {
         null -> LoginScreen(root.loginComponent)
-        else -> NavigationLayout(root.navigationComponent)
+        else -> NavigationLayout(root.mainNavigator)
     }
 }
 

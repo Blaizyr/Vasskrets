@@ -8,7 +8,7 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
-sealed class Entry<out T> {
+sealed class DomainComponentEntry<out T> {
     abstract val componentId: Uuid
     abstract val component: T
 
@@ -16,11 +16,11 @@ sealed class Entry<out T> {
     data class ConversationEntry(
         override val componentId: Uuid,
         override val component: ConversationComponent,
-    ) : Entry<ConversationComponent>()
+    ) : DomainComponentEntry<ConversationComponent>()
 
     @Serializable
     data class NoteEntry(
         override val componentId: Uuid,
         override val component: NotesComponent,
-    ) : Entry<NotesComponent>()
+    ) : DomainComponentEntry<NotesComponent>()
 }

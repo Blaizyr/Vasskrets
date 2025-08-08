@@ -5,7 +5,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
-import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
@@ -30,15 +30,15 @@ class ConversationNodeComponent(
     override val context: ComponentContext,
     override val factory: ConversationComponentFactory,
     override val controller: ConversationsController,
-    private val navigationDispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, Entry.ConversationEntry>,
+    private val navigationDispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, DomainComponentEntry.ConversationEntry>,
 ) : ConversationNode, ComponentContext by context, InstanceKeeper.Instance {
 
     private val conversationScope = context.lifecycle.createCoroutineScope()
 
     private val windowManager = getKoin().get<WindowManager>()
-    val conversationWindows = windowManager.scopedReactive<Entry.ConversationEntry>()
+    val conversationWindows = windowManager.scopedReactive<DomainComponentEntry.ConversationEntry>()
 
-    val childrenState = navigationDispatcher.childrenState
+    val childrenState = navigationDispatcher.childrenValue
 
     override fun createNewConversation() {
         conversationScope.launch {

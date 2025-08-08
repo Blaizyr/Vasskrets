@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.components.DomainComponentEntry
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -14,7 +14,7 @@ class DefaultWindowManager : WindowManager {
     private val _state = MutableStateFlow(WindowManagerState())
     override val state: StateFlow<WindowManagerState> = _state.asStateFlow()
 
-    override fun open(entry: Entry<*>) {
+    override fun open(entry: DomainComponentEntry<*>) {
         _state.update { currentState ->
             currentState.copy(
                 windows = currentState.windows + entry
@@ -22,7 +22,7 @@ class DefaultWindowManager : WindowManager {
         }
     }
 
-    override fun dock(windowId: Uuid): Entry<*>? {
+    override fun dock(windowId: Uuid): DomainComponentEntry<*>? {
         val entryToDock = state.value.windows.find { it == windowId }
         if (entryToDock != null) {
             _state.update { currentState ->

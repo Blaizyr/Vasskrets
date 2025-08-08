@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.ui.windowing.WindowManager
 import kotlin.reflect.KClass
 
-fun <T : Any> WindowManager.scopedReactiveTo(type: KClass<T>): StateFlow<List<Entry<T>>> {
+fun <T : Any> WindowManager.scopedReactiveTo(type: KClass<T>): StateFlow<List<DomainComponentEntry<T>>> {
     return this.state
         .map { managerState ->
             managerState.windows
                 .filter { type.isInstance(it.component) }
-                .map { it as Entry<T> }
+                .map { it as DomainComponentEntry<T> }
         }.stateIn(
             scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob()),
             started = SharingStarted.WhileSubscribed(5000),
@@ -24,5 +24,5 @@ fun <T : Any> WindowManager.scopedReactiveTo(type: KClass<T>): StateFlow<List<En
         )
 }
 
-inline fun <reified T : Any> WindowManager.scopedReactive(): StateFlow<List<Entry<T>>> =
+inline fun <reified T : Any> WindowManager.scopedReactive(): StateFlow<List<DomainComponentEntry<T>>> =
     scopedReactiveTo(T::class)

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
 import pw.kmp.vasskrets.InteractionEnvironment
 import pw.kmp.vasskrets.Session
-import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
 import pw.kmp.vasskrets.components.conversation.ConversationNodeComponent
 import pw.kmp.vasskrets.components.conversation.DefaultConversationComponent
@@ -24,9 +24,9 @@ import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
 import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
+import pw.kmp.vasskrets.navigation.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.MyNavState
 import pw.kmp.vasskrets.navigation.NavigationComponent
-import pw.kmp.vasskrets.navigation.NavigationConfig
 import pw.kmp.vasskrets.platform.ConversationsController
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -38,7 +38,7 @@ class RootComponent(
     private val _currentSession = MutableStateFlow<Session?>(null)
     val currentSession: StateFlow<Session?> = _currentSession
 
-    private val navigation = StackNavigation<NavigationConfig>()
+    private val mainNavigation = StackNavigation<MainNavigationConfig>()
 
     val loginComponent = DefaultLoginComponent(
         componentContext = childContext(key = "login", lifecycle = null),
@@ -62,34 +62,34 @@ class RootComponent(
             )
         }
 
-    private val navigationStack: Value<ChildStack<NavigationConfig, Child>> = childStack(
-        source = navigation,
-        serializer = NavigationConfig.serializer(),
-        initialConfiguration = NavigationConfig.Conversations,
+    private val mainNavigationStack: Value<ChildStack<MainNavigationConfig, Child>> = childStack(
+        source = mainNavigation,
+        serializer = MainNavigationConfig.serializer(),
+        initialConfiguration = MainNavigationConfig.Conversations,
         handleBackButton = true,
         childFactory = ::navigate,
     )
 
-    val navigationComponent = NavigationComponent(
-        componentContext = childContext(key = "navigation", lifecycle = null),
-        navigation = navigation,
-        navigationStack = navigationStack
+    val mainNavigator = NavigationComponent(
+        componentContext = childContext(key = "main_navigation", lifecycle = null),
+        navigation = mainNavigation,
+        navigationStack = mainNavigationStack
     )
 
-    private fun navigate(navConfig: NavigationConfig, context: ComponentContext): Child {
+    private fun navigate(navConfig: MainNavigationConfig, context: ComponentContext): Child {
         return when (navConfig) {
 
-            is NavigationConfig.Home -> Child.Home(
+            is MainNavigationConfig.Home -> Child.Home(
                 component = DefaultHomeComponent(componentContext = context)
             )
 
-            is NavigationConfig.Notes -> Child.Notes(
+            is MainNavigationConfig.Notes -> Child.Notes(
                 component = DefaultNotesComponent(
                     componentContext = context
                 )
             )
 
-            is NavigationConfig.Conversations -> {
+            is MainNavigationConfig.Conversations -> {
                 val routerContext = context.childContext("router")
                 val nodeContext = context.childContext("node")
                 val dispatcherContext = context.childContext("dispatcher")
@@ -100,11 +100,11 @@ class RootComponent(
                     conversationsMetadataUseCase = conversationMetadataUseCase
                 )
 
-                val dispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, Entry.ConversationEntry> =
+                val dispatcher: GenericNavigationDispatcher<ConversationDestinationConfig, DomainComponentEntry.ConversationEntry> =
                     GenericNavigationDispatcher(
                         serializer = MyNavState.serializer(ConversationDestinationConfig.serializer()),
                         childFactory = { config, childContext ->
-                            Entry.ConversationEntry(
+                            DomainComponentEntry.ConversationEntry(
                                 config.configUuid,
                                 conversationComponentFactory(config.conversationUuid, childContext)
                             )
@@ -125,8 +125,8 @@ class RootComponent(
             }
 
 
-            NavigationConfig.Profile -> TODO()
-            NavigationConfig.Settings -> TODO()
+            MainNavigationConfig.Profile -> TODO()
+            MainNavigationConfig.Settings -> TODO()
         }
     }
 

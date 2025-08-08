@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.window.Window
-import pw.kmp.vasskrets.components.Entry
+import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.ui.NotesScreen
 import pw.kmp.vasskrets.ui.conversation.ConversationScreen
 import pw.kmp.vasskrets.ui.windowing.WindowManager
@@ -24,8 +24,8 @@ fun WindowHost(windowManager: WindowManager) {
                 title = "Conversation: ${window.componentId/* TODO conversation name */}"
             ) {
                 when(window) {
-                    is Entry.ConversationEntry -> ConversationScreen(window.component)
-                    is Entry.NoteEntry -> NotesScreen(window.component)
+                    is DomainComponentEntry.ConversationEntry -> ConversationScreen(window.component)
+                    is DomainComponentEntry.NoteEntry -> NotesScreen(window.component)
                 }
             }
         }

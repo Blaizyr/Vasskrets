@@ -11,11 +11,11 @@ import pw.kmp.vasskrets.components.root.Child
 @OptIn(DelicateDecomposeApi::class)
 class NavigationComponent(
     componentContext: ComponentContext,
-    private val navigation: StackNavigation<NavigationConfig> = StackNavigation(),
-    val navigationStack: Value<ChildStack<NavigationConfig, Child>>
+    private val navigation: StackNavigation<MainNavigationConfig> = StackNavigation(),
+    val navigationStack: Value<ChildStack<MainNavigationConfig, Child>>
 ) : ComponentContext by componentContext {
 
-    fun navigateTo(target: NavigationConfig) {
+    fun navigateTo(target: MainNavigationConfig) {
         navigation.push(target)
     }
 }

@@ -17,11 +17,10 @@ import pw.kmp.vasskrets.components.root.Child.Home
 import pw.kmp.vasskrets.components.root.Child.Notes
 import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
-import pw.kmp.vasskrets.navigation.NavigationComponent
-import pw.kmp.vasskrets.navigation.NavigationConfig
+import pw.kmp.vasskrets.navigation.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.NavItem
+import pw.kmp.vasskrets.navigation.NavigationComponent
 import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
-import pw.kmp.vasskrets.ui.theme.AppTheme
 
 @Composable
 fun NavigationLayout(component: NavigationComponent) {
@@ -30,31 +29,31 @@ fun NavigationLayout(component: NavigationComponent) {
 
     val targets = listOf(
         NavItem(
-            id = NavigationConfig.Home.toString(),
+            id = MainNavigationConfig.Home.toString(),
             label = "Home",
             icon = {
                 IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Home,
-            onClick = { component.navigateTo(NavigationConfig.Home) }
+            onClick = { component.navigateTo(MainNavigationConfig.Home) }
         ),
         NavItem(
-            id = NavigationConfig.Notes.toString(),
+            id = MainNavigationConfig.Notes.toString(),
             label = "Notes",
             icon = {
                 IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Notes,
-            onClick = { component.navigateTo(NavigationConfig.Notes) }
+            onClick = { component.navigateTo(MainNavigationConfig.Notes) }
         ),
         NavItem(
-            id = NavigationConfig.Conversations.toString(),
+            id = MainNavigationConfig.Conversations.toString(),
             label = "Conversations",
             icon = {
                 IconPlaceholder()
             },
             isSelected = currentTarget == ScreenTarget.Conversations,
-            onClick = { component.navigateTo(NavigationConfig.Conversations) }
+            onClick = { component.navigateTo(MainNavigationConfig.Conversations) }
         ),
     )
 
@@ -62,16 +61,14 @@ fun NavigationLayout(component: NavigationComponent) {
         navItems = targets,
         topBar = {},
         content = {
-            AppTheme {
-                Children(stack = childStack) {
-                    when (val child = it.instance) {
-                        is Home -> HomeScreen(child.component)
-                        is Notes -> NotesScreen(child.component)
-                        is Conversations -> ConversationNavigation(child.component)
+            Children(stack = childStack) {
+                when (val child = it.instance) {
+                    is Home -> HomeScreen(child.component)
+                    is Notes -> NotesScreen(child.component)
+                    is Conversations -> ConversationNavigation(child.component)
 
-                        is Profile -> TODO()
-                        is Settings -> TODO()
-                    }
+                    is Profile -> TODO()
+                    is Settings -> TODO()
                 }
             }
         }

@@ -1,12 +1,6 @@
 package pw.kmp.vasskrets.platform
 
-import android.content.Context
-
-private lateinit var appContext: Context
-
-fun initPlatformContext(context: Context) {
-    appContext = context.applicationContext
-}
+import pw.kmp.vasskrets.platform.AndroidAppContextHolder.appContext
 
 actual fun provideBaseDir(): String {
     return  appContext.filesDir.absolutePath

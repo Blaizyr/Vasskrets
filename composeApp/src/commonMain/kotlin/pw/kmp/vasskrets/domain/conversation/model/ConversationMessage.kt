@@ -12,6 +12,6 @@ import kotlin.uuid.Uuid
 data class ConversationMessage(
     val id: Uuid = Uuid.random(),
     val text: String,
-    val sender: Participant,
+    val participant: Participant,
     @Contextual val sentAt: Instant,
 )

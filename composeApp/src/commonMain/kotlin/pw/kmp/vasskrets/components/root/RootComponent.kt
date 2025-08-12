@@ -107,7 +107,6 @@ class RootComponent(
                                 conversationComponentFactory(config.conversationUuid, childContext)
                             )
                         },
-//                        routeConfigsFlow = controller.availableItems,
                         componentContext = dispatcherContext,
                     )
 

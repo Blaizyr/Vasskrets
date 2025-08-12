@@ -4,6 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import pw.kmp.vasskrets.components.root.Child
@@ -15,7 +17,10 @@ class NavigationComponent(
     val navigationStack: Value<ChildStack<MainNavigationConfig, Child>>
 ) : ComponentContext by componentContext {
 
-    fun navigateTo(target: MainNavigationConfig) {
-        navigation.push(target)
+    fun navigateTo(config: MainNavigationConfig) {
+        navigationStack.items
+            .firstOrNull { it.configuration == config }
+            ?.let { navigation.bringToFront(it.configuration) }
+            ?: navigation.push(config)
     }
 }

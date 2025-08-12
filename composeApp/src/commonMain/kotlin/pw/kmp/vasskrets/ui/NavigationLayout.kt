@@ -17,9 +17,9 @@ import pw.kmp.vasskrets.components.root.Child.Home
 import pw.kmp.vasskrets.components.root.Child.Notes
 import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
-import pw.kmp.vasskrets.navigation.MainNavigationConfig
+import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.NavItem
-import pw.kmp.vasskrets.navigation.NavigationComponent
+import pw.kmp.vasskrets.navigation.main.NavigationComponent
 import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
 
 @Composable

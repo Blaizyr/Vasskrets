@@ -15,7 +15,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun ConversationNavigation(node: ConversationNodeComponent) {
-    val childStack by node.childrenState.subscribeAsState()
+    val children by node.childrenValue.subscribeAsState()
     val availableConversations by node.controller.availableItems.collectAsState()
 
     AdaptiveNavigationScaffold(
@@ -30,7 +30,7 @@ fun ConversationNavigation(node: ConversationNodeComponent) {
                 )
             },
         content = {
-            childStack.firstOrNull()?.let { child ->
+            children.firstOrNull()?.let { child ->
                 ConversationScreen(child.instance.component)
             }
         }

@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.navigation
+package pw.kmp.vasskrets.navigation.main
 
 import kotlinx.serialization.Serializable
 

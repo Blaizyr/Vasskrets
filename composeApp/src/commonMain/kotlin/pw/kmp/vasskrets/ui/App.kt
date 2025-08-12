@@ -52,7 +52,6 @@ import pw.kmp.vasskrets.components.notes.NotesComponent
 import pw.kmp.vasskrets.components.root.RootComponent
 import pw.kmp.vasskrets.data.note.NoteRepository
 import pw.kmp.vasskrets.domain.note.Note
-import pw.kmp.vasskrets.ui.adaptive.ProvideInteractionEnvironment
 import pw.kmp.vasskrets.ui.theme.AppTheme
 import pw.kmp.vasskrets.ui.theme.LocalThemeIsDark
 import vasskrets.composeapp.generated.resources.IndieFlower_Regular
@@ -71,7 +70,6 @@ import vasskrets.composeapp.generated.resources.vasskrets
 @Composable
 internal fun App(root: RootComponent) {
     val session by root.currentSession.collectAsState()
-    ProvideInteractionEnvironment(root.interactionEnvironment)
 
     when (/*session*/"logged in ;)") {
         null -> LoginScreen(root.loginComponent)

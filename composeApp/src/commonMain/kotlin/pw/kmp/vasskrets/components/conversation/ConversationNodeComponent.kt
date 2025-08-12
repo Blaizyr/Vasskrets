@@ -8,7 +8,7 @@ import org.koin.mp.KoinPlatform.getKoin
 import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
-import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
+import pw.kmp.vasskrets.navigation.domain.GenericNavigationDispatcher
 import pw.kmp.vasskrets.platform.ConversationsController
 import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
@@ -38,7 +38,7 @@ class ConversationNodeComponent(
     private val windowManager = getKoin().get<WindowManager>()
     val conversationWindows = windowManager.scopedReactive<DomainComponentEntry.ConversationEntry>()
 
-    val childrenState = navigationDispatcher.childrenValue
+    val childrenValue = navigationDispatcher.childrenValue
 
     override fun createNewConversation() {
         conversationScope.launch {
@@ -74,7 +74,7 @@ class ConversationNodeComponent(
 
         if (platform.family != PlatformFamily.JVM) return
 
-        childrenState.value.find { it.key == config }?.let {
+        childrenValue.value.find { it.key == config }?.let {
             windowManager.open(it.instance)
         } ?: println("Theres no entry for convo navi config: $config")
     }

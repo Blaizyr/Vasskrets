@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
-import pw.kmp.vasskrets.InteractionEnvironment
 import pw.kmp.vasskrets.Session
 import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.components.conversation.ConversationComponentFactory
@@ -23,10 +22,10 @@ import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.CreateNewConversationUseCase
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
-import pw.kmp.vasskrets.navigation.GenericNavigationDispatcher
-import pw.kmp.vasskrets.navigation.MainNavigationConfig
-import pw.kmp.vasskrets.navigation.MyNavState
-import pw.kmp.vasskrets.navigation.NavigationComponent
+import pw.kmp.vasskrets.navigation.domain.GenericNavigationDispatcher
+import pw.kmp.vasskrets.navigation.domain.MyNavState
+import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
+import pw.kmp.vasskrets.navigation.main.NavigationComponent
 import pw.kmp.vasskrets.platform.ConversationsController
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -47,7 +46,6 @@ class RootComponent(
         }
     )
 
-    val interactionEnvironment = getKoin().get<InteractionEnvironment>()
     private val conversationMetadataUseCase = getKoin().get<ConversationsMetadataUseCase>()
     private val createConversation = getKoin().get<CreateNewConversationUseCase>()
 
@@ -111,7 +109,6 @@ class RootComponent(
                         },
 //                        routeConfigsFlow = controller.availableItems,
                         componentContext = dispatcherContext,
-                        interactionContext = interactionEnvironment
                     )
 
                 Child.Conversations(

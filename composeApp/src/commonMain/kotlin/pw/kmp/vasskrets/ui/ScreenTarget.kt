@@ -1,7 +1,7 @@
 package pw.kmp.vasskrets.ui
 
 import pw.kmp.vasskrets.components.root.Child
-import pw.kmp.vasskrets.navigation.MainNavigationConfig
+import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
 
 sealed class ScreenTarget {
     data object Home : ScreenTarget()

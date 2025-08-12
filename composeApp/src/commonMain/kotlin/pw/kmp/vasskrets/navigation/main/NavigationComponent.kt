@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.navigation
+package pw.kmp.vasskrets.navigation.main
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi

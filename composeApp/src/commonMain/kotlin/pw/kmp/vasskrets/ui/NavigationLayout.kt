@@ -17,10 +17,12 @@ import pw.kmp.vasskrets.components.root.Child.Home
 import pw.kmp.vasskrets.components.root.Child.Notes
 import pw.kmp.vasskrets.components.root.Child.Profile
 import pw.kmp.vasskrets.components.root.Child.Settings
-import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.NavItem
+import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.main.NavigationComponent
 import pw.kmp.vasskrets.ui.conversation.ConversationNavigation
+import pw.kmp.vasskrets.ui.home.HomeScreen
+import pw.kmp.vasskrets.ui.note.NotesScreen
 
 @Composable
 fun NavigationLayout(component: NavigationComponent) {

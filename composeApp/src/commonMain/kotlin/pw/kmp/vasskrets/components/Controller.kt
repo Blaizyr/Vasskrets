@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.components.conversation
+package pw.kmp.vasskrets.components
 
 import kotlinx.coroutines.flow.StateFlow
 

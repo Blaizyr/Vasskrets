@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import pw.kmp.vasskrets.components.conversation.Controller
+import pw.kmp.vasskrets.components.Controller
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationIdentity
 import pw.kmp.vasskrets.domain.conversation.usecase.ConversationsMetadataUseCase

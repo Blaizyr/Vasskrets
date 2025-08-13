@@ -18,17 +18,36 @@ fun ConversationNavigation(node: ConversationNodeComponent) {
     val children by node.childrenValue.subscribeAsState()
     val availableConversations by node.controller.availableItems.collectAsState()
 
-    AdaptiveNavigationScaffold(
-        navItems =
+    val navItems = buildList {
+        add(
+            NavItem(
+                id = "new",
+                isSelected = false,
+                onClick = { node.createNewConversation() },
+                icon = { Text("➕") },
+                label = "New"
+            )
+        )
+        addAll(
             availableConversations.map { conversation ->
                 NavItem(
                     id = conversation.id.toString(),
                     isSelected = false,
-                    onClick = { node.openConversation(ConversationDestinationConfig(conversationUuid = conversation.id)) },
+                    onClick = {
+                        node.openConversation(
+                            ConversationDestinationConfig(
+                                conversationUuid = conversation.id
+                            )
+                        )
+                    },
                     icon = { Text("💬") },
-                    label = conversation.metadata.title ?: ""
+                    label = conversation.metadata.title.orEmpty()
                 )
-            },
+            }
+        )
+    }
+    AdaptiveNavigationScaffold(
+        navItems = navItems,
         content = {
             children.firstOrNull()?.let { child ->
                 ConversationScreen(child.instance.component)

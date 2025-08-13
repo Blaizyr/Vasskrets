@@ -5,8 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.window.Window
 import pw.kmp.vasskrets.components.DomainComponentEntry
-import pw.kmp.vasskrets.ui.NotesScreen
 import pw.kmp.vasskrets.ui.conversation.ConversationScreen
+import pw.kmp.vasskrets.ui.note.NotesScreen
 import pw.kmp.vasskrets.ui.windowing.WindowManager
 import kotlin.uuid.ExperimentalUuidApi
 

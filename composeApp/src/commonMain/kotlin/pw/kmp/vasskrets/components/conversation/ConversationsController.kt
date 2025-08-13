@@ -1,4 +1,4 @@
-package pw.kmp.vasskrets.platform
+package pw.kmp.vasskrets.components.conversation
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,8 @@ class ConversationsController(
 ) : Controller<ConversationIdentity>, ComponentContext by context {
 
     private val scope = context.lifecycle.createCoroutineScope()
-    private val _availableConversationIdentities = MutableStateFlow<List<ConversationIdentity>>(emptyList())
+    private val _availableConversationIdentities =
+        MutableStateFlow<List<ConversationIdentity>>(emptyList())
     override val availableItems: StateFlow<List<ConversationIdentity>> = _availableConversationIdentities.asStateFlow()
 
     init {

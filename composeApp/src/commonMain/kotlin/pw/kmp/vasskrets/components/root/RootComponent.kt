@@ -26,7 +26,7 @@ import pw.kmp.vasskrets.navigation.domain.GenericNavigationDispatcher
 import pw.kmp.vasskrets.navigation.domain.MyNavState
 import pw.kmp.vasskrets.navigation.main.MainNavigationConfig
 import pw.kmp.vasskrets.navigation.main.NavigationComponent
-import pw.kmp.vasskrets.platform.ConversationsController
+import pw.kmp.vasskrets.components.conversation.ConversationsController
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

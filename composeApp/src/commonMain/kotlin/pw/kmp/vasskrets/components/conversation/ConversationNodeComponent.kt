@@ -9,7 +9,6 @@ import pw.kmp.vasskrets.components.DomainComponentEntry
 import pw.kmp.vasskrets.createCoroutineScope
 import pw.kmp.vasskrets.domain.conversation.model.ConversationDestinationConfig
 import pw.kmp.vasskrets.navigation.domain.GenericNavigationDispatcher
-import pw.kmp.vasskrets.platform.ConversationsController
 import pw.kmp.vasskrets.platform.PlatformFamily
 import pw.kmp.vasskrets.platform.platform
 import pw.kmp.vasskrets.ui.windowing.WindowManager

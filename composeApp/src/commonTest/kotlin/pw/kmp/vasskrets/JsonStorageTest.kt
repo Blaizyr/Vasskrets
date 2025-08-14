@@ -6,6 +6,7 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.data.ensureDirsFor
 import pw.kmp.vasskrets.domain.note.Note
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -14,7 +15,9 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.ExperimentalTime
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 @ExperimentalTime
 class JsonStorageTest {
 

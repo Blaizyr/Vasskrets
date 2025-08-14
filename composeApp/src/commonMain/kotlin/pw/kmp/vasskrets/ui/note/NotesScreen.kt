@@ -25,7 +25,9 @@ import pw.kmp.vasskrets.components.notes.NotesComponent
 import pw.kmp.vasskrets.data.note.NoteRepository
 import pw.kmp.vasskrets.domain.note.Note
 import pw.kmp.vasskrets.ui.FilePathDisplay
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun NotesScreen(component: NotesComponent) {
     var title by remember { mutableStateOf("") }
@@ -82,10 +84,9 @@ fun NotesScreen(component: NotesComponent) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(notes) { note ->
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text(note.id)
+                    Text(note.id.toString())
                     Text(note.title /*style = MaterialTheme.typography.subtitle1*/)
                     Text(note.content/*, style = MaterialTheme.typography.body2*/)
-                    Text("Utworzono: ${note.meta.created}"/*, style = MaterialTheme.typography.caption*/)
                 }
                 HorizontalDivider()
             }

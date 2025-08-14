@@ -14,6 +14,8 @@ import pw.kmp.vasskrets.domain.conversation.model.ConversationInputElement
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMessage
 import pw.kmp.vasskrets.domain.conversation.model.Participant
 import pw.kmp.vasskrets.domain.conversation.usecase.SendTextMessageUseCase
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -32,7 +34,7 @@ interface ConversationComponent {
     fun sendMessage()
 }
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
 class DefaultConversationComponent(
     private val conversationId: Uuid,
     private val sendTextMessageUseCase: SendTextMessageUseCase,
@@ -55,11 +57,16 @@ class DefaultConversationComponent(
             onSendMessage()
         }
     }
-    private fun onSendMessage() {
+
+    private suspend fun onSendMessage() {
+        val newMessage = ConversationMessage(
+            sentAt = Clock.System.now(),
+            text = uiState.value.currentTextInput,
+            participant = Participant.USER,
+        )
         sendTextMessageUseCase.invoke(
-            conversationId,
-            Participant.USER,
-            uiState.value.currentTextInput
+            conversationId = conversationId,
+            messageToSend = newMessage,
         )
     }
 }

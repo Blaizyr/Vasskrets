@@ -1,20 +1,21 @@
 package pw.kmp.vasskrets.domain.conversation.usecase
 
 import pw.kmp.vasskrets.data.conversation.ConversationRepository
-import pw.kmp.vasskrets.domain.conversation.model.Participant
+import pw.kmp.vasskrets.domain.conversation.model.ConversationMessage
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class SendTextMessageUseCase(
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
 ) {
-    operator fun invoke(
+    suspend operator fun invoke(
         conversationId: Uuid,
-        sender: Participant? = Participant.USER,
-        text: String
+        messageToSend: ConversationMessage,
     ) {
-//        chatRepository.sendMessage(conversationId, sender, text)
-        TODO("Not yet implemented in repo")
+        conversationRepository.sendMessage(
+            conversationId = conversationId,
+            newMessage = messageToSend,
+        )
     }
 }

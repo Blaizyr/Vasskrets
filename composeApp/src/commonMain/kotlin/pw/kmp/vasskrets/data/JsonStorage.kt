@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import pw.kmp.vasskrets.domain.Metadata
 import pw.kmp.vasskrets.platform.getPlatformFileSystem
 import pw.kmp.vasskrets.platform.provideBaseDir
 
@@ -15,25 +14,26 @@ class JsonStorage(
     private val json: Json = Json { prettyPrint = true },
     private val fileSystem: FileSystem = getPlatformFileSystem(),
 ) {
-
-    fun <T : Metadata> loadMetadatas(type: DataType<T>): List<T> {
+/*    fun <T : Metadata> loadMetadatas(type: MetadataType<T>): List<T> {
         val dir = baseDir / type.subDir
-        if (!fileSystem.exists(dir)) return emptyList()
+        fileSystem.ensureDirsFor(dir)
 
         return fileSystem.list(dir)
             .filter { it.name.endsWith(".json") }
             .mapNotNull { path ->
                 runCatching {
                     val source = fileSystem.read(path) { readUtf8() }
-                    Json.decodeFromString(type.metadataDeserializer, source)
+                    val result = Json.decodeFromString(type.metadataDeserializer, source)
+                    Logger.d { "Loaded metadata: $result" }
+                    result
                 }.getOrNull()
             }
-    }
+    }*/
 
     fun <T> save(filename: String, content: T, serializer: KSerializer<T>): Boolean {
         return try {
             val path = baseDir / filename
-            ensureDirExists(path)
+            fileSystem.ensureDirsFor(path)
             val text = json.encodeToString(serializer, content)
             fileSystem.write(path, mustCreate = false) { writeUtf8(text) }
             true
@@ -93,11 +93,6 @@ class JsonStorage(
     private fun resolvePath(id: String, subDir: String = ""): Path {
         val fileName = "$id.json"
         return if (subDir.isEmpty()) baseDir / fileName else baseDir / subDir / fileName
-    }
-
-    private fun ensureDirExists(path: Path) {
-        val parent = path.parent ?: return
-        if (!fileSystem.exists(parent)) fileSystem.createDirectories(parent)
     }
 
 }

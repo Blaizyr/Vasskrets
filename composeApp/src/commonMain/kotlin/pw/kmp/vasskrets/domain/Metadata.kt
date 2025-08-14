@@ -8,5 +8,6 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalTime::class, ExperimentalUuidApi::class)
 interface Metadata {
     val id: Uuid
-    val lastModified: Instant
+    val createdAt: Instant
+    val tags: List<String>
 }

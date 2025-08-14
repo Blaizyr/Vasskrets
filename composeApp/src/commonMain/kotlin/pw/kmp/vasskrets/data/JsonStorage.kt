@@ -14,25 +14,32 @@ class JsonStorage(
     private val json: Json = Json { prettyPrint = true },
     private val fileSystem: FileSystem = getPlatformFileSystem(),
 ) {
-/*    fun <T : Metadata> loadMetadatas(type: MetadataType<T>): List<T> {
-        val dir = baseDir / type.subDir
-        fileSystem.ensureDirsFor(dir)
+    /*    fun <T : Metadata> loadMetadatas(type: MetadataType<T>): List<T> {
+            val dir = baseDir / type.subDir
+            fileSystem.ensureDirsFor(dir)
 
-        return fileSystem.list(dir)
-            .filter { it.name.endsWith(".json") }
-            .mapNotNull { path ->
-                runCatching {
-                    val source = fileSystem.read(path) { readUtf8() }
-                    val result = Json.decodeFromString(type.metadataDeserializer, source)
-                    Logger.d { "Loaded metadata: $result" }
-                    result
-                }.getOrNull()
-            }
-    }*/
+            return fileSystem.list(dir)
+                .filter { it.name.endsWith(".json") }
+                .mapNotNull { path ->
+                    runCatching {
+                        val source = fileSystem.read(path) { readUtf8() }
+                        val result = Json.decodeFromString(type.metadataDeserializer, source)
+                        Logger.d { "Loaded metadata: $result" }
+                        result
+                    }.getOrNull()
+                }
+        }*/
 
-    fun <T> save(filename: String, content: T, serializer: KSerializer<T>): Boolean {
+    fun <T> save(
+        filename: String,
+        content: T,
+        serializer: KSerializer<T>,
+        subDir: String = "",
+    ): Boolean {
         return try {
-            val path = baseDir / filename
+            val path =
+                if (subDir.isEmpty()) baseDir / filename
+                else baseDir / subDir / filename
             fileSystem.ensureDirsFor(path)
             val text = json.encodeToString(serializer, content)
             fileSystem.write(path, mustCreate = false) { writeUtf8(text) }

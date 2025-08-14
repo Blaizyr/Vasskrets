@@ -28,10 +28,14 @@ class LocalConversationDataSource(
       }
   */
     override suspend fun loadChat(chatId: Uuid): Conversation? {
-        return jsonStorage.loadById(
-            id =chatId.toString(),
-            deserializer = storageConfig.serializer
-        )?.messages?.let { Conversation(chatId, it) }
+        val loadedStorageEntity = jsonStorage.loadById(
+            id = chatId.toString(),
+            deserializer = storageConfig.serializer,
+            subDir = storageConfig.subDir
+        )
+        return loadedStorageEntity?.let {
+            Conversation(it.id, it.messages)
+        }
     }
 
     override suspend fun saveChat(conversation: Conversation): Boolean {
@@ -42,7 +46,8 @@ class LocalConversationDataSource(
         return jsonStorage.save(
             filename = conversationStorageEntity.id.toString(),
             content = conversationStorageEntity,
-            serializer = storageConfig.serializer
+            serializer = storageConfig.serializer,
+            subDir = storageConfig.subDir
         )
     }
 

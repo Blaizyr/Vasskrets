@@ -1,7 +1,6 @@
 package pw.kmp.vasskrets.data.conversation.datasource
 
 import pw.kmp.vasskrets.domain.conversation.model.Conversation
-import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -10,7 +9,7 @@ interface ConversationDataSource {
 
     suspend fun createNewChat() : Conversation
 
-    suspend fun loadChatMetadata(): List<ConversationMetadata>
+//    suspend fun loadChatMetadata(): List<ConversationMetadata>
 
     suspend fun loadChat(chatId: Uuid): Conversation?
 

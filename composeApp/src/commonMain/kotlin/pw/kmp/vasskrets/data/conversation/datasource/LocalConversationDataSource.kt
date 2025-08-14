@@ -1,11 +1,10 @@
 package pw.kmp.vasskrets.data.conversation.datasource
 
-import kotlinx.serialization.KSerializer
 import pw.kmp.vasskrets.data.JsonStorage
+import pw.kmp.vasskrets.data.conversation.ConversationStorageConfig
+import pw.kmp.vasskrets.data.conversation.ConversationStorageEntity
 import pw.kmp.vasskrets.domain.conversation.model.Conversation
 import pw.kmp.vasskrets.domain.conversation.model.ConversationMetadata
-import pw.kmp.vasskrets.data.ChatType
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -13,35 +12,37 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
 class LocalConversationDataSource(
     private val jsonStorage: JsonStorage,
-    private val serializer: KSerializer<Conversation> = Conversation.serializer(),
+    private val storageConfig: ConversationStorageConfig,
 ) : ConversationDataSource {
     override suspend fun createNewChat(): Conversation {
-        val newChatId = Uuid.random()
-        val newChat = Conversation(
-                id = newChatId,
-                name = "",
-                beginsAt = Clock.System.now(),
-                tags = emptyList(),
-                messages = emptyList(),
-                meta = emptyMap()
-            )
+        val newChat = Conversation()
+        val metadata = ConversationMetadata( //TODO: add metadata persistence system #13
+            id = newChat.id
+        )
         saveChat(newChat)
         return newChat
     }
 
-    override suspend fun loadChatMetadata(): List<ConversationMetadata> {
-        return jsonStorage.loadMetadatas(type = ChatType)
-    }
-
+    /*  override suspend fun loadChatMetadata(): List<ConversationMetadata> {
+          return jsonStorage.loadMetadatas(type = ConversationMetadataType)
+      }
+  */
     override suspend fun loadChat(chatId: Uuid): Conversation? {
-        return jsonStorage.loadById(chatId.toString(), serializer)
+        return jsonStorage.loadById(
+            id =chatId.toString(),
+            deserializer = storageConfig.serializer
+        )?.messages?.let { Conversation(chatId, it) }
     }
 
     override suspend fun saveChat(conversation: Conversation): Boolean {
+        val conversationStorageEntity = ConversationStorageEntity(
+            id = conversation.id,
+            messages = conversation.messages,
+        )
         return jsonStorage.save(
-            filename = conversation.id.toString(),
-            content = conversation,
-            serializer = serializer
+            filename = conversationStorageEntity.id.toString(),
+            content = conversationStorageEntity,
+            serializer = storageConfig.serializer
         )
     }
 
